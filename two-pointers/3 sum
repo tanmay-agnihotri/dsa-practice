@@ -1,0 +1,78 @@
+Intuition
+The problem can be reduced to finding a 2-sum for every element in the array.
+
+First, we sort the array so that we can efficiently use the two-pointer technique and also skip duplicates easily.
+
+For every index i, we fix nums[i] as the first element of the triplet and search for two numbers whose sum equals -nums[i].
+
+Since the array is sorted, we can move the left and right pointers based on whether the current sum is smaller or larger than the target.
+
+To avoid duplicate triplets, we skip repeated values for i, left, and right.
+
+Approach
+Sort the array.
+Initialize an empty list result.
+Traverse the array using index i.
+Skip duplicate values of nums[i].
+For each i:
+Set left = i + 1
+Set right = n - 1
+Target becomes -nums[i]
+Use two pointers to find pairs whose sum equals the target:
+If sum is smaller, move left.
+If sum is larger, move right.
+If sum equals target:
+Add triplet to result.
+Skip duplicates for left and right.
+Return the result list.
+
+Complexity
+Time complexity:
+O(n^2)
+
+Space complexity:
+O(1)
+
+
+
+class Solution:
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
+        nums.sort()
+        i = 0
+        
+        n = len(nums)
+        result = []
+       
+
+        while i < n - 2:
+            if i > 0 and nums[i] == nums[i-1]:
+                i += 1
+                continue
+            right = n - 1
+            left = i+1
+            target = -1 * nums[i]
+            while left < right:
+                total = nums[left] + nums[right]
+                if total == target:
+                    result.append([nums[i],nums[left],nums[right]])
+                    left += 1
+                    right -=1
+
+                    while left < right and nums[left] == nums[left-1]:
+                        left += 1
+                    
+                    while left < right and nums[right] == nums[right+1]:
+                        right -= 1
+                
+                elif total < target:
+                    left += 1
+                
+                else:
+                    right -= 1
+
+            i += 1
+
+        return result
+
+
+
