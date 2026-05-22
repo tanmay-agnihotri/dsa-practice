@@ -1,0 +1,38 @@
+Intuition
+so our method is we will passy the array only once and we will sort it , in 1 pass , for that we will need 3 pointers , low to store value of zeroes , high to score value of 2s and , mid to check where we are currently and compare, so we send all the zeros towards low , and all the 2 towards high and remain 1 at their place .
+
+Approach
+step 1 , set low = 0 and mid = 0 , high = n-1
+step 2 ,loop condition is we traverse until mid crosses high
+step 3 , if nums[mid] == 2 we swap it with high and decrease high
+step 4 if nums[mid] == 0 we swap mid with low and increase low and mid
+step 5 if nums[mid] == 1 , we just increase mid
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        n = len(nums)
+        low = 0
+        mid = 0 
+        high = n - 1
+
+        while mid <= high :
+            if nums[mid] == 2:
+                nums[mid] , nums[high] = nums[high] , nums[mid]
+                high -= 1
+            elif nums[mid] == 0:
+                nums[mid] , nums[low] = nums[low] ,nums[mid]
+                low += 1
+                mid += 1
+            else: #nums[mid] == 1
+                mid += 1
