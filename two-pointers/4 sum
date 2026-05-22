@@ -1,0 +1,64 @@
+Intuition
+I observed that 4Sum can be reduced similarly to 3Sum. Instead of directly finding 4 numbers, I can fix two numbers and then solve the remaining problem using the two-pointer technique.
+
+Approach
+step 1 . i sorted the array just like 3 pointer , iterate i over the array
+, made an empty list result
+step 2 . loop condition for i in range(n-3)
+define j as j = i+1
+skip duplicate i
+step 3 .
+loop condition for j (i+1, n-2): #very important
+skip duplicate j
+
+                left pointer
+                right pointer
+
+                “after fixing i and j, reduce the problem to 2Sum using two pointers”
+
+                define total
+                compare total and target 
+                define all the conditions for comparison of target and total
+Complexity
+Time complexity:
+O(n^3)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        nums.sort()
+        i = 0
+        n =len(nums)
+        result = []
+
+        for i in range(n-3):
+            j = i + 1
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            for j in range(i + 1, n - 2):
+                if j > i+1 and nums[j] == nums[j-1]:
+                    continue
+ 
+                left = j + 1
+                right = n - 1 
+              
+                while left < right:
+                    total = nums[i] + nums[j] + nums[left] + nums[right]
+                    if total == target:
+                        result.append([nums[i] , nums[j] , nums[left] , nums[right]])
+                        left += 1
+                        right -= 1
+
+                        while left < right and nums[left] == nums[left-1]:
+                            left += 1
+
+                        while left < right and nums[right] == nums[right+1]:
+                            right -= 1        
+
+                    elif total < target:
+                        left += 1
+                    else: 
+                        right -= 1
+                    
+        return result
