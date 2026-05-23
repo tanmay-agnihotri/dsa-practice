@@ -1,0 +1,29 @@
+Intuition
+after looking at problem i thought i can solve this problem with 2 pointer pattern , i will need 2 pointers i , j , one pointer scans the array and the other keeps track of the position where the next non-zero element should be placed. the idea is to collect all non-zero elements at the front while pushing zeros to the end.
+
+Approach
+Initialize i = 0 (position for next non-zero)
+Iterate j from start to end of array
+If nums[j] != 0:
+swap nums[i] and nums[j]
+increment i
+j always moves forward
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        i = 0
+        for j in range(len(nums)):
+            if nums[j] != 0:
+                nums[i] , nums[j] = nums[j] , nums[i]
+                i+=1
