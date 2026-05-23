@@ -1,0 +1,47 @@
+Intuition
+so after looking at problem i thought of using 2 pointers , one at string1 and other at string2 , both pointers traverse strings and append characters alternatively , if a string is smaller than other string , i the pointer of bigger string additionally adds all the elements at the end of result string till all the elements of bigger string afre traversed and added . then i convert the result array into string and return the result string
+
+Approach
+initalize i and j = 0
+create emply list result = []
+treverse i and j together ,
+append elements od string1 in result
+append elements of string 2 in result
+update i pointer , then update j pointer
+
+write condition if a string is bigger than other
+append elements of bigger string
+update pointer
+
+convert result into string
+return answer
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code
+class Solution:
+    def mergeAlternately(self, word1: str, word2: str) -> str:
+        i = 0
+        j = 0
+        result = []
+
+        while i < len(word1) and j < len(word2):
+            result.append(word1[i])
+            result.append(word2[j])
+            i += 1
+            j += 1
+
+        while i < len(word1):
+            result.append(word1[i])
+            i += 1
+        while j < len(word2):
+            result.append(word2[j])
+            j += 1
+        return "".join(result)
+
+            
