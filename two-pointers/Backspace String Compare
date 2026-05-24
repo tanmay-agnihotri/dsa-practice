@@ -1,0 +1,69 @@
+Intuition
+this is a unique question unlike normal 2 pointer question in this question we need to understand backspace deletes a character so instead of traversing string from start we traverse from end , now we traverse both strings from the end because backspace affects previous characters.
+We use a skip counter to ignore characters deleted by '#'.
+For each string, we find the next valid character by skipping deleted ones.
+Then we compare both characters. If at any point they differ, return false.
+If both strings finish together, return true.
+
+Approach
+i = len(s) -1
+j = len (t) - 1
+skipS =0
+skipT = 0
+looping condition while i >= 0 or j >= 0
+check valid element of string s , if "#"found increase skip count , skip the chracter and decrease skip count, then check valid character for string t ,
+
+then compare both the valid charcaters fromm string s and t , if notequal return false , if 1 string is completly traverse and other is still remaining return false
+
+after comparing update i and j pointer for comparison of next valid character
+
+return true if all the conditions become true
+
+Complexity
+Time complexity:
+O(m+n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def backspaceCompare(self, s: str, t: str) -> bool:
+        i = len(s) - 1
+        j = len(t) - 1
+
+        skipS = 0
+        skipT = 0
+
+        while i >=0 or j >= 0:
+
+            while i >=0:
+                if s[i] == "#":
+                    skipS += 1
+                    i -= 1
+                elif skipS > 0:
+                    skipS -= 1
+                    i -= 1
+                else:
+                    break
+
+            while  j >=0:
+                if t[j] == "#":
+                    skipT += 1
+                    j -= 1
+                elif skipT > 0:
+                    skipT -= 1
+                    j -= 1
+                else:
+                    break
+            
+            if i >= 0 and j >= 0:
+                if s[i] != t[j]:
+                    return False
+            elif i >=0 or j >= 0:
+                return False
+
+            i -= 1
+            j -= 1
+        return True
+                    
