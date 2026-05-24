@@ -1,0 +1,36 @@
+Intuition
+when looking at this problem first thought was adding strings from front using 2 pointers but then i realized if i will add values from front i will loose some important values , so new strategy was i knew array is already sorted so i started from behind as there are empty spaces at back of the array so i compared biggest of both the arrays and i knew one of them is going to be at the end , so i initalized a 3rd pointer at the end of nums1 so i was storing the biggest value at the end of nums1 and traversing whole list using j pointer and when j pointer gets out of the loop the array will be sorted
+
+Approach
+initalize :
+i = m - 1
+j = n - 1
+k = m + n -1
+loop condition till j >= 0:
+when element of i are bigger than element of j and i is inside the list : update elements and move pointer of i
+else : update elmenets and move j pointer
+k pointer moves after every iteration
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        i = m - 1
+        j = n - 1
+        k = m + n - 1
+
+        while j >= 0:
+            if i >=0 and nums1[i] > nums2[j]:
+                nums1[k] = nums1[i]
+                i -= 1
+            else:
+                nums1[k] = nums2[j]
+                j -= 1
+            k -= 1
