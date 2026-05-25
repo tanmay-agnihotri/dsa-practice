@@ -1,0 +1,51 @@
+# intuition
+after looking at this question i realized i can solve the question using sliding window pattern ,then i realized the window size in this question is fixed , so my strategy was to calculate the sum of first subarray and then slide the window and calculate slide window of next subbaray and compare the max sum among the 2 subbarays and repeat this till whole array is traversed 
+
+# approach
+assign 2 pointers 
+low = 0
+high = k - 1
+window_sum = 0
+
+calculate sum of first window 
+
+result = 0
+
+loop condition for traversal till end of array (high < len(arr)
+       compare result with window total return max of them
+            move the pointers high and low 
+
+               check if high is inside the loop:
+                   calculate new window total
+  return result
+
+#time compexity 
+O(n)
+
+#space complexity 
+O(1)
+
+#code
+
+class Solution:
+    def maxSubarraySum(self, arr, k):
+        # code here 
+        low = 0
+        high = k - 1
+        window_sum = 0
+        
+        for i in range(low, high + 1 , 1):
+            window_sum = window_sum + arr[i]
+        
+        result = window_sum    
+        while high < len(arr):
+            result = max(window_sum , result)
+            low += 1
+            high += 1
+            
+            if high == len(arr):
+                break
+            else:
+                window_sum = window_sum - arr[low-1] + arr[high]
+        return result    
+        
