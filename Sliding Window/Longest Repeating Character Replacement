@@ -1,0 +1,55 @@
+Intuition
+after looking at this problem i realized it is a sliding window pattern , and window size is not fixed , for this question my thinking is i will find the maximum possible substring in which with k replacements i can get longest substring with same letter , for this my formula is calculate the most frequent character of the substring , then check length of substring - most_frequent if it is less than or equal to k valid case, otherwise , remove characters from frequency map
+
+Approach
+low = 0
+result = 0
+max_freq = 0
+freq = {}
+
+traverse the string , add characters into frequency map :
+for high in range (len(s)):
+add characters into frequency map
+calculate the most frequent character
+
+calculate length of substring
+
+check for invalid condition ,
+while length of substring - most frequent character > k:
+remove elements from frequency map
+move low by +1
+recount length of substring
+calculate length of substring
+find max possible length and store it in result
+return result
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        low = 0
+        result = 0 
+        freq = {}
+        max_freq = 0
+
+        for high in range(len(s)):
+            freq[s[high]] = freq.get(s[high] , 0) + 1
+            max_freq = max(max_freq , freq[s[high]])
+            window_length = high - low + 1
+
+            while window_length - max_freq > k:
+                freq[s[low]] -= 1
+                if freq[s[low]] == 0:
+                    del freq[s[low]]
+                low += 1
+                window_length = high - low + 1
+            
+            length = high - low + 1
+            result = max(result , length)
+        return result
