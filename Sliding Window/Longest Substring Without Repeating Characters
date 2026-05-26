@@ -1,0 +1,49 @@
+Intuition
+so after looking at probelm i realized this is a sliding window problem and in this problem the size of window is not fixed , so my thinking was i will find frequency map of characters and if length of frequency map is less than length of substring so duplicates exist , so i will remove characters from frequency map till length of frequency map is equal to length of substring , then i will return the maximum possible length of substring with unique characters
+
+Approach
+initalize low = 0, high = 0 , low for removing characters and high for adding characters into frequency map ,
+create empty dictionary for counting frequency of characters , freq = {}
+result = 0 (if there exists no charcaters in string or string is empty)
+
+traverse the substring loop condition
+for high in range (len(s)):
+add characters into freq map ,
+calculate length of substring
+
+check for wrong condition : while len(freq) < length of substring
+remove characters from substring
+move low by +1
+again calaculate length of updated substring
+
+when condition is correct : len(freq) == length of substring
+calaculate length
+update result = max(result , length)
+
+return result
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1) for lower case alphabets , O(n) for general case because we created a dictionary
+Code
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        low = 0 
+        high = 0
+        result = 0
+        freq = {}
+
+        for high in range(len(s)):
+            freq[s[high]] = freq.get(s[high],0) + 1
+            length_window = high - low + 1
+            while len(freq) < length_window:
+                freq[s[low]] -= 1
+                if freq[s[low]] == 0:
+                    del freq[s[low]]
+                low += 1
+                length_window = high - low + 1
+            length = high - low + 1
+            result = max(result , length)
+        return result
