@@ -1,0 +1,49 @@
+intuition : after looking at problem what i realized this is a sliding window pattern with dynamix window size , so my approach was i will find the frequency map of charcaters and i am going to add characters till size of frequency map is equal to given k , if size of frequency map gets larger than k , i will delete elements from dictionary till , frequency map gets to right size , once the frequency map gets to right size , i will calculate the max length of substring and return it as answer 
+
+approach: 
+take 2 pointers high = 0 low =0 
+# high for adding elements in the frequency map and low for removing elements 
+initalize max_length = -1 (if there is no substring with k dictinct characters)
+create empty dictionary freq ={}
+traverse the string using loop condition
+for high in range(len(s)):
+     first add elements inside frequency map as frequency map is initally empty
+      freq[s[high]] = freq.get(s[high],0) + 1
+     then check for condition if len(freq) > k:
+            remove elements from frequency map , if frequency of an element becomes zero remove it      from frequency map , after removing element , move low pointer by +1 , 
+
+then check required condition if len(freq) == k :
+then calculate length of substring = right - left + 1
+find max of max_length and length 
+
+return max_length
+
+# time complexity O(n+m)
+# space complexity O(n)
+
+code :
+class Solution:
+    def longestKSubstr(self, s, k):
+        # code here
+        low = 0
+        high = 0
+        max_length = -1
+        freq = {}
+        
+        for high in range(len(s)):
+            freq[s[high]] = freq.get(s[high] , 0) + 1
+            
+            while len(freq) > k:
+                freq[s[low]] -= 1
+                if freq[s[low]] == 0:
+                    del freq[s[low]]
+                low += 1
+            
+            if len(freq) == k:
+                length = high - low + 1
+                max_length = max(length , max_length)
+        
+        return max_length
+                
+                
+         
