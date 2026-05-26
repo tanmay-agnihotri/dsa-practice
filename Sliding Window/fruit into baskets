@@ -1,0 +1,51 @@
+Intuition
+after looking at problem i realized it is a sliding window problem and i need to find maximum lenth of subarray with 2 distinct characters , so my window size is dynamic , for this problem i will create frequency map and i need to return the size of subarray with maximum possible 2 distinct fruits.
+
+Approach
+i need 2 pointers high and low and initalize them to zero , high is used to add elements in frequency map and low is used to remove elements from frequency map ,
+create empty dictionary freq = {} , so store the frequency of elements in subarray ,
+initalize max_fruits = 0 (in case there are no elements in array)
+
+now we traverse the array loop condition
+for high in range(len(fruits)):
+add elements into the frequncy map as frequency map is currently empty
+freq[fruits[high]] = freq.get(fruits[high] , 0) + 1
+check for case when len(freq) > 2 :
+remove elements from frequency till it comes to required condition that is k is equal to 2 or kess than 2
+freq[fruits[low]] -= 1
+if freq[fruits[low] == 0:
+del freq[fruits[low]]
+move low pointer low +=1
+
+now when the case is in required condition
+if len(freq) == 2 or len(freq) < 2:
+calculate length of substring , length = high - low + 1
+get maximum_fruits by comparing it with maximum length of subarray
+
+return max_fruits
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def totalFruit(self, fruits: List[int]) -> int:
+        low = 0
+        high = 0 
+        max_fruits = 0
+        freq = {}
+
+        for high in range(len(fruits)):
+            freq[fruits[high]] = freq.get(fruits[high] , 0) + 1
+
+            while len(freq) > 2:
+                freq[fruits[low]] -= 1
+                if freq[fruits[low]] == 0:
+                    del freq[fruits[low]]
+                low += 1
+            if len(freq) == 2 or len(freq) < 2:
+                length = high - low + 1
+                max_fruits = max(length , max_fruits)
+        return max_fruits
