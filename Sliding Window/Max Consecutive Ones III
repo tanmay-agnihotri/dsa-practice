@@ -1,0 +1,46 @@
+Intuition
+so after reading the question i realized it a sliding window pattern and the window size is dynamic , now in this question most important thing is calculate or have account of number of zeros if zero_count > k then shrink the window till zero_count comes under the given condition , and we will return the longest subarray with given k zeros and 1s
+
+Approach
+low = 0 , high = 0, high expands the window and low shrinks the window.
+create a zero_count variable for counting number of zeros and initalize it to 0 initally
+res to store max size of subarray initally 0
+
+now we will traverse the array
+loop condition for high in range(len(nums)):
+if nums[high] == 0:
+increse zero count
+
+coindition for shrinking window
+while zer0_count > k:
+if nums[low] ==0:
+zero_count -= 1
+low += 1
+window length = high - low + 1
+res = max(res , window_length)
+return res
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def longestOnes(self, nums: List[int], k: int) -> int:
+        low = 0
+        result = 0 
+        zero_count = 0
+
+        for high in range(len(nums)):
+            if nums[high] == 0:
+                zero_count += 1
+            while zero_count > k:
+                if nums[low] == 0:
+                    zero_count -= 1
+                low += 1
+
+            result = max(result , high - low + 1)
+        return result
