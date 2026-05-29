@@ -1,0 +1,50 @@
+Intuition
+When i looke dat this problem i realized it is a sliding window problem with fixed window size , now my inofrmation is i need to see if permutation of s1 is in s2 so for that i realized if i calaculate freq map of s1 and For each window, I maintain its frequency map and compare it with s1’s frequency. If they match at any point, I return true. , otherwise keep sliding if high reaches out of s2 return false.
+
+Approach
+edge condition if len(s1) > len(s2)
+return false
+calculate freq map of s1
+calcualte freq map of first window
+compare freq map of first window and s1 if both equal return true
+else slide window
+
+sliding the window , add one element in window , add it into freq map of window , remove the freq of low from window freq map , increase low
+check condition if freq map of window == freq map of s1 ,return true
+
+else return false
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2):
+            return False
+        freqs1 = {}
+        for ch in range(len(s1)):
+            freqs1[s1[ch]] = freqs1.get(s1[ch] ,0) + 1
+
+        low = 0
+
+        window_freq = {}
+        for i in range(len(s1)):
+            window_freq[s2[i]] = window_freq.get(s2[i], 0) + 1
+
+        if window_freq == freqs1:
+            return True
+        
+        for high in range(len(s1) , len(s2)):
+        
+            window_freq[s2[high]] = window_freq.get(s2[high] , 0) + 1
+            window_freq[s2[low]] -= 1
+            if window_freq[s2[low]] == 0:
+                del window_freq[s2[low]]
+            low +=1
+            if window_freq == freqs1:
+                return True
+            
+        return False
