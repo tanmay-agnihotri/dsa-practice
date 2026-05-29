@@ -1,0 +1,60 @@
+Intuition
+When i looked at this problem i realized it is a sliding window problem with dynamic window size , so my key intition was i will calculate the target freq map of string t and then i will create window _freq map for string s , now i will create a variable formed to see if my window is formed with required charcaaters from target freq and when the condition meets i will check the size of window store the size of smallest window and store the smallest possible string in result . i only update result if find a substring of length smaller than my currently stored window after shrinking , then shrink the window and see if i can find the smallest possible string with valid conditions , return the answer .
+
+Approach
+calculate target freq from t
+
+build window_freq :
+if s[high] in target_freq and target_freq[s[high]] == window_freq[s[high]]:
+formed += 1
+
+while formed == required:
+window_length = high - low + 1
+calcualte min_window_length
+result becomes s[low:high+1]
+# shrink the window
+if s[low] in target freq and target_freq[s[low]] > window_freq[s[low]]
+formed -= 1
+low += 1
+return result
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        if not s or not t:
+            return ""
+        target_freq = {}
+        for ch in t:
+            target_freq[ch] = target_freq.get(ch , 0) + 1
+        
+        window_freq = {}
+        required = len(target_freq)
+        formed = 0
+        low = 0
+        min_length = float('inf')
+        result = ""
+
+        for high in range(len(s)):
+            window_freq[s[high]] = window_freq.get(s[high], 0) + 1
+            if s[high] in target_freq and target_freq[s[high]] == window_freq[s[high]]:
+                formed += 1
+
+                while formed == required:
+                    window_size = high - low + 1
+                    if window_size < min_length:
+                        min_length = window_size
+                        result = s[low:high + 1]
+
+                    window_freq[s[low]] -= 1
+                    if s[low] in target_freq and target_freq[s[low]] > window_freq[s[low]]:
+                        formed -= 1
+                    low += 1
+        return result
+
