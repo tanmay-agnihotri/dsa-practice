@@ -1,0 +1,46 @@
+Intuition
+When i looked at this problem i realized this is a sliding window problem with fixed window size of len(p) , An anagram contains exactly the same characters with the same frequencies as p ,so my initial intuition was to get the freq map of p , then find the freq map of initial window , if they are equal i will store index of low in result , else slide window and keep updating the created freq map of window and whenever the freq map of window equals to freq map of p append low in result.
+
+Approach
+calculate the target freq of p
+calaculate inital window freq
+if window_freq == target_freq:
+append low in result
+
+slide the window
+add new element into window , update freq map of window , del low from from freq map , increase low , check if freq map becomes equal
+
+return result
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        if len(p) > len(s):
+            return []
+        target_freq = {}
+        for ch in p:
+            target_freq[ch] = target_freq.get(ch,0) + 1
+        
+        window_freq = {}
+        for i in range(len(p)):     
+            window_freq[s[i]] = window_freq.get(s[i] ,0) + 1
+        low = 0
+        result = []
+
+        
+        if window_freq == target_freq:
+            result.append(low)
+        for high in range(len(p),len(s)):
+            window_freq[s[high]] = window_freq.get(s[high],0) + 1
+            window_freq[s[low]] -= 1
+            if window_freq[s[low]] == 0:
+                del window_freq[s[low]]
+            low += 1
+            if window_freq == target_freq:
+                result.append(low)
+        return result
