@@ -1,0 +1,38 @@
+problem link : https://leetcode.com/problems/linked-list-cycle/description/
+
+Intuition
+So for this problem my intuition was this can be solved using slow and fast pointer pattern and for that i use 2 pointers slow and fast , slow pointer moves by 1 node at a time and fast pointer moves faster than slow pointer suppose 2 nodes at a time , and normally if it is a straight linked list then they would never meet and fast poointer will reach final node address which will be none , but if these pointers meet at any point then for sure there is a cycle .
+
+Approach
+slow and fast pointer at head
+loop condition while fast and fast.next :
+move slow pointer
+move fast pointer
+If a cycle exists, the fast pointer moves faster than the slow pointer and will eventually catch up to it inside the cycle. If no cycle exists, the fast pointer will reach None.
+
+if slow == fast:
+    cycle exists return True
+if loop ends there is no cycle return False
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        slow = head
+        fast = head
+        while fast != None and fast.next != None:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return True
+        return False
