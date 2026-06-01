@@ -1,0 +1,77 @@
+problem link:  https://leetcode.com/problems/substring-with-concatenation-of-all-words/description/
+
+Intuition
+when i looked at this problem i realized it is a sliding window pattern and the window size when looked carefully can be derived and it is fixed . now for this question it will be helpful if i calcalate the target freq map of words to find freq of each word , now coming to main string what we need to understand is how will be our answer , it can be in form of words so we need not to search every character we only go for starting index of words , for eg if our word_len = 3 then we only search at index [0,3,6,.....] or words at index [1,4,7,......] or [2,5,8,......]and this can go like till word_len - 1 so what we should do is we apply a loop for offsets where we see if our answer window is like in offset for zero if not then increase offset and see if it is in offset of 1 and so on , now what importtant thing is we know our window size is fixed , so we see if word in string is in target if yes we include it in our window , check if window length becomes valid if window becomes valid then we add index of low in result if not we expland window , but if we find a word which is not in our target and it is found then we clear the window and move low pointer , if the window is empty and the word we check is invalid we just move low pointer , at the end we return our result .
+
+Approach
+calculate word length
+calaculate window length
+calculate target freq
+
+result = []
+offset = 0
+
+looping condition , for offset in range(word_len):
+low = offset
+window = {}
+
+window condition
+for high in range(offset,len(s) - word_len + 1 , word_len):
+word = s[high:high+word_len]
+if word in target :
+add word in window freq map
+check if freq or word in window > target :
+shrink window
+
+    if window len becomes equalt to required concatenation length then all the words would have matched .
+     if window_len = high - low + word_len:
+        result.append(low)
+else:
+    window.clear()
+    low = high + word_len
+return result
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(k) , k = number of distinct words in words
+
+Code
+class Solution:
+    def findSubstring(self, s: str, words: List[str]) -> List[int]:
+        if not s or not words:
+            return []
+        word_len = len(words[0])
+        window_len = word_len * len(words)
+
+        target = {}
+        for i in words:
+            target[i] = target.get(i,0) + 1
+
+        result = []
+
+        for offset in range(word_len):
+            low = offset
+            window = {}
+
+            for high in range(offset,len(s) - word_len + 1, word_len):
+                word = s[high:high+word_len]
+                if word in target:
+                    window[word] = window.get(word,0) + 1
+
+                    while window[word] > target[word]:
+                        left_word = s[low:low + word_len]
+                        window[left_word] -= 1
+                        if window[left_word] == 0:
+                            del window[left_word]
+                        low += word_len
+                    if high - low + word_len == window_len:
+                        result.append(low)
+                       
+                else:
+                    window.clear()
+                    low = high + word_len
+        return result
+
