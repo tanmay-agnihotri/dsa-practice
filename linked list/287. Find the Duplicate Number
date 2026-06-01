@@ -1,0 +1,35 @@
+problem link : https://leetcode.com/problems/find-the-duplicate-number/description/
+
+Intuition
+Since the array has n+1 elements but every value lies in [1,n], at least one value must repeat. If we treat each index as a node and define the next node as nums[index], the array forms a linked-list-like graph. Because a value is duplicated, two different paths eventually merge, creating a cycle. The entrance of this cycle corresponds to the duplicate value. Therefore, we can use Floyd's Cycle Detection Algorithm to find the cycle entrance and return it as the duplicate number.
+
+Approach
+start with slow and fast both at 0
+now as we know the cycle exists , we write loop condition while True:
+move slow by one link and fast by two links in the linked list formed by i = arr[i] , when slow == high or meet , then take a pointer ptr and place it at 0 and slow remains at meeting point , move slow and ptr together when they meet , the number they meet at is duplicate number , return that .
+
+Complexity
+Time complexity:
+O(n)
+Floyd's Cycle Detection Algorithm consists of two linear phases:
+Detect a meeting point inside the cycle.
+Find the cycle entrance.
+Each phase requires at most O(n) steps, resulting in an overall time complexity of O(n).
+
+Space complexity:
+O(1) Only a constant number of pointers are used, regardless of the input size.
+Code
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        slow = 0
+        fast = 0
+        while True:
+            slow = nums[slow]
+            fast = nums[fast]
+            fast = nums[fast]
+            if slow == fast:
+                ptr = 0
+                while slow != ptr:
+                    slow = nums[slow]
+                    ptr = nums[ptr]
+                return slow
