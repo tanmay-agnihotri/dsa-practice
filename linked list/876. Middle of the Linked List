@@ -1,0 +1,35 @@
+problem link : https://leetcode.com/problems/middle-of-the-linked-list/description/
+
+Intuition
+in this question we use slow and fast pointers and our intition is fast moves at 2 times or double the speed of slow , so we traverse the list and as soon fast traverses the loop slow reaches the middle of linked list hence we return slow after traversing fast from linked list
+
+Approach
+Initialize two pointers, slow and fast, at the head of the linked list.
+
+Traverse the list while fast and fast.next exist:
+Move slow by one node.
+Move fast by two nodes.
+
+Since fast moves twice as fast as slow, when fast reaches the end of the linked list, slow will have traversed only half the distance and will be positioned at the middle node.
+
+Return slow.
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = head
+        fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
