@@ -1,0 +1,33 @@
+problem link : https://leetcode.com/problems/reverse-linked-list/description/
+
+Intuition
+for this problem we think like we have to reverse coaches of a train , there is a mechanic and a helper suppose mechanic is at engine or the first coach and the helper is behind him at empty space , now mechanic have to change the dirn of engine but he can not do that directly otherwise he will loose connection from train , so he stores connection of engine to next coach into a new_next varaible now he freely changes the dirn and then helper moves from empty space to first coach engine and mechanic moves from engine to next coach by the help of new_next variable , now we repeat this process at the end when mechanic is at last coach he moves to None and helper moves to last coach , hence we know train is reversed and we return the helper as head of the train
+
+Approach
+save dirn of mechanic
+change dirn of mechanic to helper
+move helper
+move mechanic
+at the end return helper
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        curr = head
+        prev = None
+        while curr != None:
+            next_node = curr.next
+            curr.next = prev
+            prev = curr
+            curr = next_node
+        return prev
