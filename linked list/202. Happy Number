@@ -1,0 +1,35 @@
+problem link : https://leetcode.com/problems/happy-number/description/
+
+Intuition
+when i looked at this question i realized that n is moving from one number to another and Each number can be transformed into a unique next state using the sum-of-squares function . Just like a linked list and when a number is not happy it keeps on moving in a loop and never reaches 1 , so my main intuition was Instead of explicitly building a linked list, I treat each number as a state and use the sum-of-squares function as the next pointer.and then see if there is a loop inside the linked list if loop occurs number is not happy otherwise if number reaches 1 it wil be a happy number
+
+Approach
+first i need to know how to reach to next number for that it is given i need to get the sum of squares of digits of the number , so i create a function to that part of the job , now after that too traverse along the list i can take slow and fast pointers approach if slow and fast meet at a number other than 1 then loop exists hence it is not a happy number , if they meet at 1 then a happy number
+
+Complexity
+Time complexity:
+O(logn) each computation of the next state requires processing all digits of n,
+which takes O(log n) time. After a few iterations the values become
+bounded by a small constant, so the remaining cycle detection work is
+constant.
+Space complexity:
+O(1)
+Code
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        def sum_of_squares_of_digits(n):
+            total = 0
+            while n > 0:
+                digit = n % 10
+                total += digit ** 2
+                n = n // 10
+            return total
+      
+        slow = n
+        fast = n
+        while fast != 1 :
+            slow = sum_of_squares_of_digits(slow)
+            fast = sum_of_squares_of_digits(sum_of_squares_of_digits(fast))
+            if slow == fast and slow != 1:
+                return False
+        return True
