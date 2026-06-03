@@ -1,0 +1,48 @@
+problem link : https://leetcode.com/problems/reorder-list/description/
+Intuition
+so for this question the main pattern we can observe is that if we find the middle of list and then reverse the second half of linked list and then join first half and reversed second half alternatively we can reach the desired linked list.
+
+Approach
+Find the middle of the linked list using the slow and fast pointer technique.
+Split the list into two halves.
+Reverse the second half of the list.
+Merge the first half and the reversed second half by alternating nodes from each list.
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        slow = head
+        fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        curr = slow.next
+        slow.next = None
+        prev = None
+        while curr:
+            new_node = curr.next
+            curr.next = prev
+            prev = curr
+            curr = new_node
+        ptr1 = head
+        ptr2 = prev
+        while ptr2:
+            next1 = ptr1.next
+            next2 = ptr2.next
+            ptr1.next = ptr2
+            ptr2.next = next1
+            ptr1 = next1
+            ptr2 = next2 
