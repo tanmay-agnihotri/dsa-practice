@@ -1,0 +1,30 @@
+problem link : https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/
+Intuition
+so when i looked at this problem i realized that this is a slow and fast pointer problem and generally these pointers move at a different speed , but for this question i learned one new concept , slow and fast pointer with fixed gap ,so we have to focus on 2 important things , first that what should be gap between slow and fast pointer , then how will we delete the desired node from list , now important point is in linked list we remove a node by connecting it previous node to the node after , so for that first we move fast pointer to n nodes ahead of slow and then move slow and fast together , when fast reaches the None , then slow reaches the node prior to our desired node that we want to remove so we connect the node at slow to slow.next.next , hence the desired node is removed but question asks we have to return the head of new list or updated list , and in this case there can be few edge cases also , first that what if we have to remove our head from the list , or if there is only 1 node in list and n=1 so we have to remove that node and return empty list , so for these cases the problem is that we remove the desired node as slow is at previous node of desired node , but since desired node is head itself then what to do , for this case we have to take a security that is dummy node which has value 0 and its next is head .
+
+Approach
+now the approach is slow and fast pointer are initally at dummy then , we move the fast pointer to n+1 nodes ahead of slow , why n+1 and not n , because if we move the fast to n nodes ahead , then after when we move slow and fast together when fast reaches none slow reaches the desired node but we want slow to be at node previous to desired node, so we move fast n+1 nodes ahead , then we move slow and fast together till fast reaches last node, then change slow.next to slow.next.next , return dummy.next , so by this we take care of edge cases too.
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummy = ListNode(0 ,head)
+        slow = dummy
+        fast = dummy
+        for _ in range(n+1):
+            fast = fast.next
+        while fast:
+            fast = fast.next
+            slow = slow.next
+        slow.next = slow.next.next
+        return dummy.next
