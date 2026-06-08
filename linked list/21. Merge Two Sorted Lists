@@ -1,0 +1,44 @@
+problem link : https://leetcode.com/problems/merge-two-sorted-lists/description/
+Intuition
+So after looking at the question it is a usual 2 pointer question where ptr1 points at head of list1 and ptr2 points at head of list2 , now to get the new merged list we take a dummy , and a pointer tail that points at dummy , now we will compare values of 2 pointers from inital list and add the smaller value into the new list and update our tail and move the pointers accordingly. Since both lists are already sorted, the smallest node among the current nodes of list1 and list2 must be the next node in the merged list. We maintain a tail pointer to the last node of the merged list and repeatedly attach the smaller node to it. This allows us to build the merged list in sorted order without creating new nodes.
+
+Approach
+create a dummy node which we will use to merge the 2 lists , take a pointer tail which points at dummy , now initalize 2 pointers ptr1 and ptr2 which points at list1 and list2 , compare the values move the pointers and return dummy.next as head of new merged list
+
+Complexity
+Time complexity:
+O(n+m)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(0)
+        tail = dummy
+
+        ptr1 = list1
+        ptr2 = list2
+
+        while ptr1 and ptr2:
+            if ptr1.val < ptr2.val:
+                tail.next = ptr1
+                tail = tail.next
+                ptr1 = ptr1.next
+            else:
+                tail.next = ptr2
+                tail = tail.next
+                ptr2 = ptr2.next
+        while ptr1:
+            tail.next = ptr1
+            tail = tail.next
+            ptr1 = ptr1.next
+        while ptr2:
+            tail.next = ptr2
+            tail = tail.next
+            ptr2 = ptr2.next
+        return dummy.next
