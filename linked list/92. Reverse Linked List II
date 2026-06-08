@@ -1,0 +1,37 @@
+problem link : https://leetcode.com/problems/reverse-linked-list-ii/description/
+Intuition
+When i looked this problem i realized it is a question based on inplace linked list reversal pattern , but the main problem was i have to replace something between the linked list not the entire linked list , now to do that firstly i need to reach to the point or node just before i have to do the reversal which would be left - 1 , now there can be a scenario i have to start reversal from first node , in that case i will not have any node before the left so for safety , i take a dummy node with val 0 and next as head , now i assign a pointer prev which is going to point to the point before the left node , another key problem in this question is that how many nodes i have to reverse , for that its simple we do it right - left + 1 time , the third part is we have to merge the node before left to reversed lift head and reversed list tail to the node after right .
+
+Approach
+so the approach is prev points at dummy initally , we then move prev left - 1 times so that it reaches the node before left , now we safely store the left in a ponter variable , leftnode = prev.next , now we also take one variable curr that also points at prev.next , after that we disconnect prev from the list , now we start reversing the nodes right - left + 1 time, after that our list is divided into 3 parts , the part before the left , the reversed part and the part after the right , now we connect the head of reversed list prev to the node before left , prev.next = helper , and connect the tail of head to the part after the right , leftnode.next = curr , then we return dummy.next as head of the new list
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseBetween(self, head: Optional[ListNode], left: int, right: int) -> Optional[ListNode]:
+        dummy = ListNode(0,head)
+        prev = dummy
+        
+        for _ in range(left-1):
+            prev = prev.next
+        leftnode = prev.next
+        
+        curr = prev.next
+        helper = None
+        for _ in range(right - left + 1):
+            newnode = curr.next
+            curr.next = helper
+            helper = curr
+            curr = newnode
+        prev.next = helper
+        leftnode.next = curr
+        return dummy.next
