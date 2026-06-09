@@ -1,0 +1,57 @@
+problem link : https://leetcode.com/problems/swap-nodes-in-pairs/description/
+
+Intuition
+When i looked at this problem i realized it can be done using pattern in place linked list reversal , now for this question i have to swap pairs , so i am going to swap pairs by reversing 2 nodes then rejoining them and moving forward now the difficulty part for this question is how will i know that a pair exists or there is only one node or the list is empty for that we are going to take a safety dummy node and initally a pointer prev points to this dummy node , now we only swap if prev.next and prev.next.next are present this checks that there are 2 nodes atleast after the prev , now if list is empty or it has only 1 node ,we just return dummy.next as head , now in case there exsists some pairs we are going to need three pointers , left (which points to the node just next to prev) , curr which also points to same node as left , now why are we using 2 pointers that point to same node the reason is , left is use for reconnecting the nodes , where as curr is used for reversing the nodes , During reversal, helper always points to the head of the partially reversed segment. After reversing exactly 2 nodes, the original first node (left) becomes the tail of the swapped pair and is later reconnected to the next part of the list.
+
+Approach
+create a safety dummy node pointing towards the head , prev points to dummy node ,
+traverse the list while there are 2 nodes available after prev , This is checked using:
+prev.next and prev.next.next
+For each pair:
+Store the first node of the pair in left.
+Set curr = left.
+Reverse exactly 2 nodes using the standard in-place linked list reversal pattern with a helper pointer.
+After reversing:
+helper points to the new head of the swapped pair.
+left becomes the tail of the swapped pair.
+curr points to the first node after the pair.
+Reconnect the reversed pair back into the list:
+Connect prev to the new head of the reversed pair.
+Connect the tail of the reversed pair (left) to the remaining part of the list (curr).
+Move prev to left (the tail of the swapped pair) so that it is positioned before the next pair to be processed.
+Continue until fewer than two nodes remain, then return dummy.next.
+
+Complexity
+Time Complexity: O(n), since each node is processed at most once while traversing and reversing pairs.
+
+Space Complexity: O(1), as the reversal is performed in-place using a constant number of pointers.
+
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(0,head)
+        prev = dummy
+
+        while prev.next and prev.next.next:
+            left = prev.next
+            curr = left
+
+            # swapping nodes / reversing 2 nodes
+            helper = None
+            for _ in range(2):
+                newnode = curr.next
+                curr.next = helper
+                helper = curr
+                curr = newnode
+            # reconnecting the nodes
+            prev.next = helper
+            left.next = curr
+
+            # move prev
+            prev = left
+        return dummy.next
