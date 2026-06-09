@@ -1,0 +1,70 @@
+problem link : https://leetcode.com/problems/reverse-nodes-in-k-group/description/
+
+Intuition
+This problem is a direct extension of the in-place linked list reversal pattern. The main challenge is determining whether a complete group of k nodes exists before attempting a reversal. To handle this, we use a checker pointer that tries to move k steps ahead from the node before the current group. If it cannot complete all k moves, there are not enough nodes remaining and we leave the rest of the list unchanged. Otherwise, a valid group exists, and we reverse exactly k nodes using the standard linked list reversal technique. After reversing the group, we reconnect it to the remaining list and continue processing the next group.
+
+Approach
+Create a dummy node pointing to the head and initialize a pointer prev to the dummy node. prev will always point to the node before the current group.
+
+Before reversing a group, use a checker pointer starting from prev and move it k times:
+
+If checker cannot complete all k moves, there are fewer than k nodes remaining, so return dummy.next.
+Otherwise, a valid group of size k exists.
+
+Store the start of the current group in group_start = prev.next. This node will become the tail of the reversed group after reversal.
+Reverse exactly k nodes using the standard in-place linked list reversal pattern:
+curr traverses the group.
+helper stores the head of the partially reversed segment.
+After reversing:
+helper points to the head of the reversed group.
+curr points to the first node after the group.
+group_start becomes the tail of the reversed group.
+Reconnect the reversed group:
+Connect prev to the new head of the reversed group.
+Connect the tail of the reversed group (group_start) to curr.
+Move prev to group_start and repeat the process for the next group.
+Continue until fewer than k nodes remain.
+
+Complexity
+Time Complexity:
+O(n)
+Each node is visited a constant number of times. The checker pointer is used to verify whether a group of k nodes exists, and the reversal loop processes each node once within its group. Therefore, the total work done across the entire list is linear in the number of nodes.
+
+Space Complexity:
+O(1)
+The reversal is performed in-place using a constant number of pointers (prev, checker, curr, helper, and group_start), so no extra space proportional to the input size is used.
+
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        dummy = ListNode(0,head)
+        prev = dummy
+        
+        while True:
+            checker = prev
+            for _ in range(k):
+                if checker.next == None:
+                    return dummy.next
+                checker = checker.next
+            group_start = prev.next
+            curr = group_start
+            helper = None
+
+            #reversing the nodes
+            for _ in range(k):
+                new = curr.next
+                curr.next = helper
+                helper = curr
+                curr = new
+
+            #rejoing nodes
+            prev.next = helper
+            group_start.next = curr
+
+            #moving prev
+            prev = group_start
