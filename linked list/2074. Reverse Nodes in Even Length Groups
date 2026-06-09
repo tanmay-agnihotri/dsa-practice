@@ -1,0 +1,64 @@
+problem link : https://leetcode.com/problems/reverse-nodes-in-even-length-groups/description/
+
+
+Intuition
+So when i looked at this problem i realized this probllem is based on inplace linked list reversal pattern , now in this question we are given groups which are of increasing length eg 1,2,3,and so on , and the last group may be less than or equal to 1 + the length of the second to last group. we have to reverse only groups of even length , now the edge cases can be when last group is expected of some length and it is less than that and the actual length of last group can be even or odd , if it is even revrse last group else , we leave it , now the main difficulty is how will we know the length of each group well that it is simple we can use a counter variable expected initally it will be 1 as the length of first group is 1 , and then increase it each iteration , during each iteration we will also need to see if the nodes present are of expected size or not , for that we should use another counter cariable actual_size which counts the length of each group , now for last group actual size can be less than expected but we still need to count actual size and see if nodes existing are of even or odd length , now the main task is to reverse the group of even length , We don't reverse based on expected size; we reverse based on actual size. so we will check if actual_size is divisible by 2 then we will reverse the group or else we will just move to next group and check till we reach the end of list and return the head of updated list.
+
+Approach
+step1 : creatate a dummy node and point it to head , initalize pointer prev to dummy node , create a counter variable expected_size and initalize it to 1 as we know first group should be of length 1
+step2 : traversal of list using loop condition : while prev.next , if prev.next == None , loop breaks and we reach the last node and come out of loop
+step 3 : inside main loop , we initalize a counter variable actual size that checks size of each group, also initalize a checker pointer that traverse the nodes expected times , its edge case is if checker.next means checker reaches last node and the whole group is not traversed , break , we move checker pointer , and increase actual_size after iteration , when checker pointer moves expected time or breaks when there are not enough nodes for expected length , we check if actual_size % 2 == 0 , means actual size is of even length or odd , before checking we initalize few pointers
+
+step4 : group_start which points at pointer next to prev , curr which points at group start , helper pointer which initally points to None , we use these pointers to reverse and reconnect these pointers
+
+step 4 : check if actaual length is divisible by 2 , if yes reverse the group , now how will we know kow many times we have to reverse , we reverse it actual_size times , then we reverse the nodes , after reversing helper becomes new head of reversed group , group start becomes tail of reversed group , we connect prev to helper and tail group start to curr which points at head of next group , after reversing we move prev to tail of reversed group
+
+step5 if actual size is of odd length , there is no need of reversal , so we just move prev to checker pointer , and increase expected_length
+
+step 6 , we traverse the list and when prev reaches last node , we exit the loop and return head of updated list , dummy.next
+
+Complexity
+Time complexity:
+O(n) : as we update the list in only 1 pass
+
+Space complexity:
+O(1) as the algorithm uses a constant number of pointers and variables, so the auxiliary space is O(1).
+
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseEvenLengthGroups(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummy = ListNode(0 , head)
+        prev = dummy
+        expected_size = 1
+
+        while prev.next:
+            checker = prev
+            actual_size = 0
+            for _ in range(expected_size):
+                if checker.next == None:
+                    break
+                checker = checker.next
+                actual_size += 1
+            
+            group_start = prev.next
+            curr = group_start
+            helper = None
+
+            if actual_size % 2 == 0:
+                for _ in range(actual_size):
+                    new = curr.next
+                    curr.next = helper
+                    helper = curr
+                    curr = new
+                prev.next = helper
+                group_start.next = curr
+                prev = group_start
+            else:
+                prev = checker
+            expected_size += 1
+        return dummy.next
