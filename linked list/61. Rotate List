@@ -1,0 +1,66 @@
+problem link : https://leetcode.com/problems/rotate-list/description/
+
+Intuition
+So when i looked at this problem i realized this is a slow and fast pointer problem with a fixed gap , the main difficulty of the problem is k can be greater than size of the list , so rotating right by k positions is equivalent to rotating right by k % length positions, , that will be the gap the slow and fast pointer require the we can simply move fast pointer ahead of slow pointer till the gap nodes , then when we move them together and fast reaches last node , our slow pointer will be just one node before the nodes we have to rotate , so we just disconnect them and them to start of the list and connect fast to the previous head of list
+
+Approach
+First, we handle the edge case where the list is empty and return it directly.
+
+To rotate the list efficiently, we first calculate the length of the linked list. Since rotating the list by its length results in the same list, we reduce the number of rotations using k % length.
+
+Next, we use a slow and fast pointer technique with a fixed gap of k % length nodes. We move the fast pointer ahead by this gap and then move both pointers together until the fast pointer reaches the last node of the list.
+
+At this point, the slow pointer will be positioned just before the node that should become the new head after rotation.
+
+We then:
+
+Store slow.next as the new head.
+Disconnect the list at slow.
+Connect the current tail (fast) to the original head.
+Return the new head.
+This rotates the list to the right by k positions in-place using constant extra space.
+
+Complexity
+Time Complexity: O(n)
+
+We traverse the list once to calculate its length, once to position the fast pointer, and once more while moving the slow and fast pointers together. Therefore, the overall time complexity is O(n).
+
+Space Complexity: O(1)
+
+Only a constant number of pointers and variables are used, so the extra space required is O(1).
+
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if head == None:
+            return head
+        dummy = ListNode(0,head)
+        slow = dummy 
+        fast = dummy
+        first = dummy.next
+        
+        length = 0
+        checker = dummy
+
+        while checker.next != None :
+            checker = checker.next
+            length += 1
+
+        gap = k % length
+        if gap == 0:
+            return head
+        for _ in range(gap):
+            fast = fast.next
+        while fast.next:
+            slow = slow.next
+            fast = fast.next
+        new = slow.next
+        slow.next = None
+        dummy.next = new
+        fast.next = first
+        return dummy.next
