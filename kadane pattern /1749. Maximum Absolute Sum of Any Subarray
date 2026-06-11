@@ -1,0 +1,32 @@
+problem link : https://leetcode.com/problems/maximum-absolute-sum-of-any-subarray/description/
+
+Intuition
+Looking at this problem i realized this is a kadane pattern question but we need to return max absolute sum od any subarray , which can come through 2 best endings first with best ending at index i with max sum of subarray , second best ending with min sum of subarray at index i , the second best ending is justified as we take absolute of it so a negative best ending with higher magnitude becomes the result , we can take result as max of absolutes of both the endings
+
+Approach
+maxsumbestending is max (nums[i], maxsumbestending + nums[i])
+minsumbestending is min of nums[i] , minsumbestending + nums[i]
+
+result is max of (maxsumbestending , abs(minsumbestending) , result)
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def maxAbsoluteSum(self, nums: List[int]) -> int:
+        maxsum_bestending = nums[0]
+        minsum_bestending = nums[0]
+        result = abs(nums[0])
+        for i in range(1,len(nums)):
+            v1 = nums[i]
+            v2 = maxsum_bestending + nums[i]
+            v3 = minsum_bestending + nums[i]
+
+            maxsum_bestending = max(v1,v2)
+            minsum_bestending = min(v1,v3)
+
+            result = max(abs(maxsum_bestending) , abs(minsum_bestending),result)
+        return result
