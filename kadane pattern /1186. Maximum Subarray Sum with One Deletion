@@ -1,0 +1,38 @@
+problem link https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/description/
+
+Intuition
+So looking at this problem we realize this problem can be solved using kadane pattern , now how do we calaculate the best ending , now for this problem there can be 2 best endings , one where we dont delete any element from the subarray , anc another where we do just 1 deletion , now the case where we dont delete any element from the subarray best ending becomes either the value of array at that particular index , or previous best ending with no deletion + the current value at index i , now the interesting part is when we choose best ending with one deletion , for that we have 2 choices , choice 1 where we have already deleted an element from subarray and we add the value at index i in subarray or we delete the current value from subarray . we cant delete the current value at index i if we have already deleted one element from that array .
+
+Approach
+to solve this
+we take 3 variables , no delete , one delete and result ,for index 0 the no delete becomes value at index 0 , one delete : we cant delete the first element from subarray otherwise subarray becomes empty so we assign it something which is impossible initally like negative infinity , result for index is value at current index
+
+now we traverse the whole array and check best possible ending at that index , for that we take 4 variables , v1 which represents the value at current index , v2 which represents previous best ending with no deletion + value at current index , v3 : which represents deleting the value at current index from subarray , v4 : which represents previous one delete + current value at index i ,
+
+now we calculate no delete as max of (v1 ,v2) and one delete as max of (v1,v3,v4). we include v1 for updation of one delete because there can be a case where everything before this index was terribe so we start fresh , then we update result as max of previous result , one delete and no delete
+
+and once all indices are checked we return result as Maximum Subarray Sum with One Deletion
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def maximumSum(self, arr: List[int]) -> int:
+        no_delete = arr[0]
+        one_delete = float('-inf')
+        result = arr[0]
+
+        for i in range(1 , len(arr)):
+            v1 = arr[i]
+            v2 = no_delete + arr[i]
+            v3 = no_delete 
+            v4 = one_delete + arr[i]
+
+            no_delete = max( v1 , v2)
+            one_delete = max(v4,v1,v3)
+
+            result = max(no_delete ,one_delete , result )
+        return result
