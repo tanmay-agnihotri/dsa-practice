@@ -1,0 +1,28 @@
+problem link :https://leetcode.com/problems/maximum-product-subarray/description/?utm_source=chatgpt.com
+Intuition
+So looking at this question we realize it can be solved using Kadanes algo , nut in this problem the hidden fact is when we multiply a positive number with a negative number its value decreases , but when we multiply a negative with negative it becomes positive , so instead of best ending we need to store 2 endings , one max ending at that index and one min ending at that index , because in future we might need min ending as we multiply a negative with negative and it become the max product.
+
+Approach
+Now approach is we start with first index , since there are no proio indices we assign its value as max and min ending and also to result , then we will traverse the array index by index , we will consider 3 scenarios at each index sceario 1 the value itself at that index is max value , second max_ending * nums[i] and third min_ending * nums[i] , now we take the max ending as max of 3 scenarios , min ending as min of three scenarios , update the result as max of result earlier stored and max ending , traverse all the indices one by one , when all the indices are traversed , return result
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        max_ending = nums[0]
+        min_ending = nums [0]
+        ans = nums[0]
+
+        for i in range(1,len(nums)):
+            v1 = nums[i]
+            v2 = max_ending * nums[i]
+            v3 = min_ending * nums[i]
+            max_ending = max(v1 ,v2 ,v3)
+            min_ending = min(v1, v2,v3)
+
+            ans = max(ans , max_ending, min_ending)
+        return ans
