@@ -1,0 +1,40 @@
+problem link : https://leetcode.com/problems/boats-to-save-people/description/
+
+Intuition
+so when i looked at this prob lem i realized it is a 2 pointer problem and this can be solved easily if i sort the array , as the person with heaviest weight goes at the last of the list , then i can check if the person with heaviest weight + person with lightest weight can go on a same boat or not if not we assign the person with heaviest boat to an individual boat and then check person with lightest and second heaviest weight and so on .
+
+Approach
+to solve this we will be needing to sort the array , assign 2 pointers left , right at first and last index of the list , a variable count to count the number of boats required ,
+
+we will check the condition till left is less than or equal to right , well why left = right becauswe there can be case when there is only one person i the list so left becomes right so this is handled by left <=. right , so we increase count += 1 in case there is only one element in list
+
+we check if weight of heaviest person + weight of lightest perosn : people[left] + people[right] <= limit ; then we increase the count and move left pointer
+
+we know that persons on right are the heaviest people so whenever people[left] + people[right] > limit , we only move right pointer as If the lightest person cannot fit with the heaviest person, then the heaviest person cannot fit with anyone.
+
+we repeat this till left pointer either crosses right pointer or becomes equalt to it , which will give us the value of the least number of boats required
+
+at the end we return the count , as number of boats required
+
+Complexity
+Time complexity:
+O(nlogn)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def numRescueBoats(self, people: List[int], limit: int) -> int:
+        people.sort()
+        left = 0
+        right = len(people) - 1
+        count = 0
+
+        while left <= right:
+            count += 1
+            if people[left] + people[right] <= limit:
+                left += 1
+            right -= 1
+
+        return count
