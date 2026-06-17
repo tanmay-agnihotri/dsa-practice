@@ -1,0 +1,43 @@
+problem link : https://leetcode.com/problems/trapping-rain-water/description/
+
+Intuition
+so for optimal solution we use 2 pointers in which we calculate lmax and rmax directly , we know water stored = min(lmax, rmax) - height[i] .
+Since trapped water depends on the smaller boundary, if left_max < right_max, then the water on the left side is already determined by left_max. The exact future value of right_max doesn't matter because it is already taller. So I process the left side and move left. Similarly, when right_max < left_max, I process the right side. This allows me to avoid storing prefix and suffix arrays and achieve O(1) space.
+
+Approach
+so what we are doing is we initalize 2 poniters left and right at start and end of array , we initalize lmax , rmax and ans to zero ,
+
+now we traverse till left pointer meets right pointer
+we calculate lmax and rmax at left and right indices
+
+The key observation is:
+
+If left_max < right_max, then the water level on the left side is already determined by left_max.
+Since the right boundary is guaranteed to be taller, the exact value of right_max does not matter. We can safely calculate the water trapped at the current left position and move the left pointer inward.
+Similarly, if right_max <= left_max, then the water level on the right side is already determined by right_max. We calculate the water trapped at the current right position and move the right pointer inward.
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+        ans = 0
+        left = 0 
+        right = n - 1
+        lmax = rmax = 0
+
+        while left < right:
+            lmax = max(lmax , height[left])
+            rmax = max(rmax , height[right])
+
+            if lmax < rmax:
+                ans += lmax - height[left]
+                left += 1
+            else:
+                ans += rmax - height[right]
+                right -= 1
+        return ans
