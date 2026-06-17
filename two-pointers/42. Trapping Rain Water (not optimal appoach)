@@ -1,0 +1,36 @@
+Intuition
+so looking at this question the first thing we notice is the water can be stored in a place or height who has a higher boundry than the current height , meaning the starting and end boundry should be higher than the current height , so how do we calculate the amount of water stored , if we find the leftmax boundry and right max boundry of that particular height the min of left max and right max boundry minus the current height will give the water stored at particular height , and if we do that for all the particular heights and add the total we will get the total water trapped .
+
+Approach
+<now to do that , we calaculate left max of that particular height and right max of that particular height , so we calculate left max of all the heights and right max of all the heights
+
+then we total the water stored in all heights using formula
+total += max(leftmax, right max) - height[i]
+
+and at the end we return the total , as total amount of water stored .
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(n)
+Code
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+        lmax = [0] * n
+        lmax[0] = height[0]
+        for i in range(1,len(height)):
+            lmax[i] = max(lmax[i-1] , height[i])
+        
+        
+        rmax = [0] * n
+        rmax[n-1] = height[len(height)-1]
+
+        for i in range(n - 2 , -1, -1):
+            rmax[i] = max(rmax[i+1],height[i])
+
+        total = 0
+        for i in range(len(height)):
+            total += min(lmax[i],rmax[i]) - height[i]
+        return total
