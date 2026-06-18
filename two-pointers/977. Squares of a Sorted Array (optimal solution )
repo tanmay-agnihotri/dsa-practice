@@ -1,0 +1,28 @@
+problem link : https://leetcode.com/problems/squares-of-a-sorted-array/description/
+
+Intuition
+looking at this problem we can solve it by using 2 pointers , by initalizing 1 pointer at start of array and another at end , we know the array is sorted so all the negatives would be at left side of array and all the positives would be at right side of the array , now we know the biggest negative integer would be at left and biggest positive integer would be at right , we know that after squaring the negatives would turn positive , and since array is already sorted , if we compare the absolutute value of negative at left with absoulute value of right , our biggest value would come from these 2 only , so whoever has greater absoulute value will have the greater value of their squares .
+
+Approach
+so we initalize left pointer at 0 start of array , right at n -1 end of array , we will add the values from behind as we will be adding the greatest and moving to the lesser value index by index , so we compare absolutes of left and right and then whoever is greater we add its square value at end of the array , at the end when all the elements are checked , we will get the squares of sorted array
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(n)
+Code
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        left = 0
+        right = n - 1
+        result = [0] * n
+        for i in range(n -1 , -1 , -1):
+            if abs(nums[left]) > abs(nums[right]):
+                result[i] = nums[left] ** 2
+                left += 1
+            else:
+                result[i] = nums[right] ** 2
+                right -= 1
+        return result
