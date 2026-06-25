@@ -1,0 +1,34 @@
+problem link : https://leetcode.com/problems/find-pivot-index/description/?submissionId=2045268712
+
+Intuition
+The most important thing to understand is , at any index i , left : prefix sum will be written as , a[0] + a[1] + a[2] + ..... + a[i-1] , similarly right : suffix sum will be written as a[i+1] + a[i+2] + ....... + a[n-1]
+so the main understanding is left + a[i] + right = total sum of that array.
+hence right = total - left - a[i]
+
+Approach
+we know for index 0 the prefix sum will be zero so initalize left = 0
+calaculate total sum of the array, for every index starting from 1 , update left by increasing a[i-1] , calculate right , check whether left == right , return the index when left and right are at equilibrium .
+
+Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(1)
+Code
+class Solution:
+    def pivotIndex(self, nums: List[int]) -> int:
+        left = total = 0
+        for i in range(len(nums)):
+            total += nums[i]
+        
+        if total - nums[0] == 0:
+            return 0
+        
+        for i in range(1,len(nums)):
+            left += nums[i-1]
+            right = total - left - nums[i]
+            if left == right:
+                return i
+        
+        return -1
+        
