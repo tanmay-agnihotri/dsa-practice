@@ -1,0 +1,43 @@
+problem link: https://leetcode.com/problems/subarray-sum-equals-k/description/
+
+Intuition
+In this problem the main thing to understand is that we want to know at any index i , the total of that subarray is current prefix sum , so we want to know is there a previous prefix sum whose sum is total - k , then the elements between the earlier position and current index must be equal to k.
+
+meaning current_prefix sum - previous_prefix sum = k
+
+at every index we know current prefix sum is total sum of that subarray
+suppose there was an earlier prefix sum equal to total - k , then: total - (total -k) = k, which means the element between those two prefix sum form a subarray with sum = k, therefore for every index we simply need to know how many times the prefix sum total - k has occured , a hashmap allows us to track these frequencies effectifely , the hashmap as a database of all prefix sums seen so far.
+
+Approach
+step 1 create an empty hash map f which help us in tracking if we have seen total - k before , initally f[0] = 1 , as sum of an empty subarray is 0 , total = 0 which we will need to calaculate the current prefix sum of subarray , count to keep track of the frequencies of total - k
+
+loop condition from start to end of array
+update total at every index
+ask question is there total - k in hash map
+freq = frequency of question in hashmap , if it exsists it will return else it will return zero ,
+update count by the freq
+update hash map with total
+
+return count
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        total = count = 0
+        f = {}
+        f[0] = 1
+        
+        for i in range(len(nums)):
+            total += nums[i]
+            ques = total - k
+            freq = f.get(ques,0)
+            count += freq
+            f[total] = f.get(total,0) + 1
+        return count 
