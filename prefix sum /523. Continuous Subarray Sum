@@ -1,0 +1,40 @@
+problem link : https://leetcode.com/problems/continuous-subarray-sum/description/
+
+Intuition
+In this problem to find subarray which are divisible with an integer k , what we can do is at any index i calculate the current prefix sum at that index : total , total is in form of kx + y , where y is the remainder , if we find any previous prefix sum which has same remainder y , which can be in form kz + y , then the remaining subarray will be kx +y - (kz+y) = k(x-z) hence sum of subarrays between the two prefix sum will be divisble by k , but we need to find if there exists any subarray with length >= 2 which is divisible by k , so we use hash map as database to store the first occurence of that remainder becasue it maximizes the distance betwen indices giving greater chance of finding a subarray whose length is at least two, if that remainder occurs again then we can calculate the length of subarray with its current index - the occurence at previous index .
+
+Approach
+we create an empty hashmap , which stores the indexes of remainders at their first occurence , initally remainder 0 occus at index -1 meaning when subaaray was empty , initally total = 0 for an empty subarray hence remiander will be zero for 0 % k , hence hashmap[0] = -1,
+
+reaverse the array ,
+at every index total += nums[i]
+remainder = total % k
+check if remainder in hash map if yes : find difference of current index - previous index >= 2 if true return True else continue
+
+if remainder not in hash map , thaen index i will be its first occurence hence update i in hash map for remainder ,
+
+if array is completly traversed and no such subarray is found which is divisble by k and has len >= 2 then return false
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        total = 0
+        remainder_to_index = {}
+        remainder_to_index[0] = -1
+        for i in range(len(nums)):
+            total += nums[i]
+            remainder = total % k
+            if remainder  in remainder_to_index:
+                if i - remainder_to_index[remainder] >= 2:
+                    return True
+            else:
+                remainder_to_index[remainder] = i
+                
+        return False
