@@ -1,0 +1,36 @@
+prroblem link : https://leetcode.com/problems/subarray-sums-divisible-by-k/description/
+
+Intuition
+In this problem we need to find subarray with sum divisible by k , so at any index i , currrent prefix sum = total , now total is in form kx + y , where y is the remainder , if we find any a previous prefix sum with same remainder as current prefix sum which is y , eg kz + y, then the remaining subarray will be kx + y - (kz + y) = k(x-z) , hence the sum of subarrays between those two prefix sums will be divisible by k , so we can use hash map as a database to store frequency of each remainder seen so far .
+
+Approach
+step 1 : create an empty hash map f , which help us track if we have seen a remainder before , initally sum = 0 for an empty subarray hence remainder will be zero for 0 % k , hence f[0] = 1 , total = 0 which will help us in calculating the current prefix sum of subarray , count to keep track of frequencies of remainder ,
+
+looping condition from start to end f array
+update total at every index , calculate remainder of total % k at every index , check in hash map if remainder exsists in hash map or not ,
+freq = frequencies of remainder in hash map ,
+update the count by the freq
+update hash map with the remainder
+
+return count
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(1)
+
+Code
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        total = count = 0
+        f = {}
+        f[0] = 1
+        for i in range(len(nums)):
+            total += nums[i]
+            remainder = total % k
+            freq = f.get(remainder,0)
+            count += freq
+            f[remainder] = f.get(remainder,0) + 1
+        return count 
