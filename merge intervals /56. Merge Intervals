@@ -1,0 +1,60 @@
+problem link : https://leetcode.com/problems/merge-intervals/description/
+
+Intuition
+for this problem we need to understand wemare given intervals if any interval overlaps then we want to merge them , now how will we know that an interval is overlapping ?
+
+suppose [[1,5],[3,7]]
+start1 = 1, end1 = 5 , start2 = 3 , end2 = 7
+
+now we can clearly see that they need to get merged but mathematical logic is when end 1 >= start2 then only we will need merging
+
+but suppose [[1,5],[7,10]]
+start1 = 1, end1 = 5 , start2 = 7 , end2 = 10
+when end1 < start2 then there will be no need of merging and there will be independent inetrvals
+
+Approach
+sort the intervals from start as sorting by start allows us to merge overlapping intervals in one go ,
+
+initalize result array where we are going to stre merged intervals
+
+start1 , end1 is the first inerval we are going to use for comparison
+
+iterate the array from second interval
+start2 and end2 will be the second interval used for comparison
+
+if end1>= start2: merge the interval and update start1 and end1 and keep it for further comparison and update start2 and end 2 into next i
+
+if end 1 < start2 : no need to merge we have found an independent interval store start1 and end1 in result and update start1 and end1 to start2 and end2
+
+during each iteration either we merge intervals by updating start1 and end1 and merging intervals into them
+
+or we find an independent interval and we store inital start1 and end1 into result and update current start1 and end1 to start2 and end2
+
+after iterating the array , one last indepent start1 and end1 remains so we store them in result and return result
+
+Complexity
+Time complexity:
+O(nlogn)
+
+Space complexity:
+O(n)
+
+Code
+class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        intervals.sort()
+        result = []
+        start1 = intervals[0][0]
+        end1 = intervals[0][1]
+        for i in range(1,len(intervals)):
+            start2 = intervals[i][0]
+            end2 = intervals[i][1]
+            if end1 >= start2:
+                start1 = start1
+                end1 = max(end1,end2)
+            else:
+                result.append([start1,end1])
+                start1 = start2 
+                end1 = end2
+        result.append([start1,end1])
+        return result
