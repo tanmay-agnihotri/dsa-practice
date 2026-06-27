@@ -1,0 +1,33 @@
+problem link : https://leetcode.com/problems/insert-interval/description/
+
+Intuition
+So in this problem we need to insert a new interval into given intervals and merge if there are any overlapping intervals , the given inetrvals are already sorted from their starting point so the only interval that may be out of position is new interval , but instead of physically inserting it into the array, I carry it through the traversal. Whenever the current interval starts before it, I swap them so that my current candidate interval is always the one with the smaller start.
+
+if theintervals overlap merge them by extendinf the ending point , otherwise the current interval is finalized and added to the answer , and we continue with next interval
+
+Complexity
+O(n)
+
+Space complexity:
+O(n)
+Code
+class Solution:
+    def insert(self, iv: List[List[int]], newIv: List[int]) -> List[List[int]]:
+        s1 = newIv[0]
+        e1 = newIv[1]
+        result = []
+        for i in range(len(iv)):
+            s2 = iv[i][0]
+            e2 = iv[i][1]
+            if s2 < s1:
+                s1 , s2 = s2 , s1
+                e1 , e2 = e2 , e1
+            if e1 >= s2:
+                e1 = max(e1,e2)
+            else:
+                result.append([s1,e1])
+                s1 = s2
+                e1 = e2
+        result.append([s1,e1])
+        return result
+            
