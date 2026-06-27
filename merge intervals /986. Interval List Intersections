@@ -1,0 +1,31 @@
+problem link : https://leetcode.com/problems/interval-list-intersections/description/
+
+Intuition
+in this problem to find intersection let us take an easy example , suppose a professor is free at time 2-5 and a student who wants to meet professor has classes till 3 , so he is free from 3-7 , then logically when can student meet professorr , not at 2 pm becuase he is not free at that time only at 3 pm , so start becomes max(start1,start2) , and till when can he ask doubts not till 7 because professor has meetings after 5 , so end is min(end1,end2) we use this logic to correctly identify the intersection period , if start <= end it follows definition of a closed interval hence we have found an intersection .
+
+we use 2 pointers to iterate the 2 lists and move pointer as the whose end interval finished first . Since both lists are sorted and intervals within each list are disjoint, the interval that ends first can never intersect any future interval from the other list. Therefore, it is safe to move that pointer.
+
+Complexity
+Time complexity:
+O(n + m)
+
+Space complexity:
+O(n)
+
+Code
+class Solution:
+    def intervalIntersection(self, firstList: List[List[int]], secondList: List[List[int]]) -> List[List[int]]:
+        result = []
+        i = j = 0
+        while i < len(firstList) and j < len(secondList):
+            start1 , end1 = firstList[i]
+            start2 , end2 = secondList[j]
+            start = max(start1,start2)
+            end = min(end1,end2)
+            if start <= end:
+                result.append([start,end])
+            if end1 < end2:
+                i += 1
+            else:
+                j += 1
+        return result
