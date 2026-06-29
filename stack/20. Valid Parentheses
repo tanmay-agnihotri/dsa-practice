@@ -1,0 +1,42 @@
+problem link: https://leetcode.com/problems/valid-parentheses/description/
+Intuition
+In this problem the key observation is a closing bracket must match its most recent unmatched opening bracket.
+
+when we traverse the string from left to right we dont know when an opening bracket will be closed, so we temporarily store all opening brackets when a closing bracket is encountered , we ensure that it matches it most recent opening bracket , stack is the most ideal data structure as it follows lifo principle, the top of stack always represent most recent unmatched opening bracket .
+
+the stack stores all the opening brackets that are waiting to be matched
+
+if current character is an opening bracket we push it into the stack , if it is a closed bracket the stack must not be empty , and the top of the stack must be itscorresponding opening bracket , if it does we pop it from stack because a new pair is matched ,
+
+if the stack is empty and brackets do not match the string is invalid we immediately return False
+
+after processing all the characters stack should be emoty if not it means there are unmatched opening brackets remaining so string should be empty.
+
+Complexity
+Time complexity:
+O(n) as we traverse the string every character is pushed once onto or popped from stack at most one time
+
+Space complexity:
+O(n) in the worst case all characters are opening brackets so stack stores all of them.
+
+Code
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for i in range(len(s)):
+            if s[i] == "(" or s[i] == "{" or s[i] == "[":
+                stack.append(s[i])
+            else:
+                if not stack:
+                    return False
+                elif s[i] == "]" and stack[-1] == '[':
+                    stack.pop()
+                elif s[i] == ')' and stack[-1] == '(':
+                    stack.pop()
+                elif s[i] == '}' and stack[-1] == '{':
+                    stack.pop()
+                else:
+                    return False
+        if stack :
+            return False
+        return True
