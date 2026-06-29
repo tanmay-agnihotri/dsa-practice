@@ -1,0 +1,33 @@
+problem link : https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/description/
+Intuition
+in this problem the key observation is whenever 2 adjacent characters are same we should remove them immediately , however after removing a pair a new adjacent duplicate may be formed .
+
+for eg abbaca , removing "bb" gives aaca now another adjacent pair "aa" is formed and we must remove it. that means whikle processing string from left to right we must remember the characters survived so far whenever we encounter a new charcater we only need to. compare it with most recent surviving character.
+
+a stack is a natural choice as it gives access to most recent element (the top of the stack).
+
+Approach
+for each charcater if stack is not empty and the current charcater matches top of the stack , they form an adjacent duplicate pair , so we remove the top element .
+
+otherwise the current charcater survives and we push it into the stack
+
+after processing all characters the stack contains exactly the remaining characters in correct order . we simply join them together to form the final answer.
+
+Complexity
+Time complexity:
+O(n) Each character is pushed onto the stack at most once and popped at most once.
+
+Space complexity:
+O(n) In the worst case, no adjacent duplicates exist, so all characters are stored in the stack.
+
+Code
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        stack = []
+        for i in range(len(s)):
+            if stack and stack[-1] == s[i]:
+                stack.pop()
+            else:
+                stack.append(s[i])
+            
+        return "".join(stack)
