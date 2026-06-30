@@ -1,0 +1,39 @@
+problem link : https://leetcode.com/problems/daily-temperatures/description/
+Intuition
+The key observation is that we only care about future days that can be next warmer days, so best approach is to traverse the temperatures from right to left. by the time we reach a particular day all future days have already been processed.
+
+if a future day temperature is less than or equal to current day, it can never be answer to current day or for any earlier day because current day is warmer or equally warm and closer . such days are no longer useful and can be removed.
+
+a monotonic stack is ideal for maintaining these useful candidates .
+
+the stack stores indices of future days whose temperatures are still candidates to be next warmer day, we store indices instead of temperature because the problem asks for number of days to wait , which is calculated as difference between indices.
+
+for each temperature
+
+remove all the future days whose temperatures are less than or equal to current temperature
+
+if the stack is not empty , the top of stack is nearest warmer day , so the answer is difference between their indices
+
+push current day's index onto the stack so it act as a candidate for earlier days.
+
+Complexity
+Time complexity:
+O(n) : each index is pushed onto stack eaxtly once and popped at most once , so the total number of stack operations is linear.
+
+Space complexity:
+O(n): in the worst case , all indices may remain in the stack.
+
+Code
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        n = len(temperatures)
+        result = [0] * n
+        stack = []
+        for i in range(n-1,-1,-1):
+            curr = temperatures[i]
+            while stack and temperatures[stack[-1]] <= curr:
+                stack.pop()
+            if stack:
+                result[i] = stack[-1] - i
+            stack.append(i)
+        return result
