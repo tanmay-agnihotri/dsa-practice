@@ -1,0 +1,29 @@
+problem link : https://leetcode.com/problems/next-greater-element-ii/description/?__cf_chl_f_tk=6A_Hz0HuNfjGEM03cac0RCEKe1srMHKFpvfCqd7AFgA-1782843227-1.0.1.1-KuUA.iyWxk8C5mcVAwvIpLpymaup3wtXdwjiXml9iCQ
+Intuition
+In a normal next greater element problem an element only needs to consider elements on its right but in a circular array elements near end must also consider elements at beginning as possible next greater elements before processing the element from left to right i preload the stack with beginning of the array , this stimulates wrapping around by placing the beginning of array into stack before the main traversal starts.
+
+As a result when we process the last few elements the stack already contains the elements they would encounter after wrapping around, allowing us to reuse the standard monotonic stack approach.
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code
+class Solution:
+    def nextGreaterElements(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        stack =[]
+        result = [-1] * n
+        for i in range(n-2,-1,-1):
+            stack.append(nums[i])
+        for i in range(n-1,-1,-1):
+            curr = nums[i]
+            while stack and stack[-1] <= curr:
+                stack.pop()
+            if stack:
+                result[i] = stack[-1]
+            stack.append(curr)
+        return result
