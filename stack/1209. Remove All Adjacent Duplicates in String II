@@ -1,0 +1,37 @@
+problem link : https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/description/
+Intuition
+the problem asks us to remove k consecutive indentical characters from the string , a key observation is that removing one group can make previously separated characters become adjacent , so we need a data structure that allows us to process the string while keeping track of the characters that are still alive.
+
+this is similar to leetcode 1047 , in that problem we only needed to know whether the previous character matches the current one here we also need to know how many consecutive occurences of that character are seen .
+
+to achieve this i use a stack where each entry stores, the character and its consecutive count
+
+if the count becomes k i remove the entire group by popping it from the stack
+
+otherwise if the character is different , i start a new group by pushing [character,1] onto the stack
+
+after processing the entire string the stack contains only the characters that remain after all possible removals . finally i rebuild the answer by repeating each character according to its stored count
+
+Complexity
+Time complexity:
+O(n) aseach character is psuhed once and popped at most once from stack , reconstructing the final string also takes O(n) , therefore the overall time complexity is O(n)
+
+Space complexity:
+in the worst case no characters are removed so the stack stores all the charcaters requiring o(n) extra space
+
+Code
+class Solution:
+    def removeDuplicates(self, s: str, k: int) -> str:
+        stack = []
+        for ch in s:
+            if stack and stack[-1][0] == ch:
+                stack[-1][1] += 1
+                if stack[-1][1] == k:
+                    stack.pop()
+            elif not stack or stack[-1][0] != ch:
+                stack.append([ch,1])
+        result = ""
+        for ch , count in stack:
+            result += ch * count
+        return result
+            
