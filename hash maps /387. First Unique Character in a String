@@ -1,0 +1,29 @@
+problem link : https://leetcode.com/problems/first-unique-character-in-a-string/description/
+Intuition
+The goal is to find index of first non repeating character in string , first i traverse the string and store freq of each character in hash map this allows me to know how many times every character occurs.
+
+next i traverse the string again left to right to check first character whose freq is 1 and is the first non repeating character . i return its index immediately .
+
+if no character has freq of 1 return , then i return -1
+
+Complexity
+Time complexity:
+O(n)
+First traversal to build the frequency map: O(n)
+Second traversal to find the first unique character: O(n)
+
+Space complexity:
+O(k)
+Where k is the number of distinct characters.
+Since the string contains only lowercase English letters, k ≤ 26, so the auxiliary space is effectively O(1).
+
+Code
+class Solution:
+    def firstUniqChar(self, s: str) -> int:
+        freq = {}
+        for ch in s:
+            freq[ch] = freq.get(ch,0) + 1
+        for i in range(len(s)):
+            if freq[s[i]] == 1:
+                return i 
+        return -1
