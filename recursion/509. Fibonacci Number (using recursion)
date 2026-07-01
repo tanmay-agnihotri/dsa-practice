@@ -1,0 +1,38 @@
+problem link : https://leetcode.com/problems/fibonacci-number/description/
+
+Intuition
+The fibonacci sequence follows the recurrence relation:
+
+fib(0) = 0
+fib(1) = 1
+fib(n) = fib(n-1) + fib(n-2) for n > 1
+
+i use recursion to directly implement the recurrence.
+
+the base case handles the smallest fibonacci numbers (0 and 1) for any other value of n , i recursively compute the previous two fibonacci numbers and return their sum.
+
+Approach
+if n is 0 , return 0
+if n = 1, return 1
+recursively compute fib(n-1) and fib(n-2)
+return the sum of two values.
+
+Complexity
+Time complexity:
+O(2^n) each recursive call generates two additional recursive calls, causing many subproblems to be computed repeatedly.
+
+Space complexity:
+O(n)
+the maximum depth of the recursion stack is n
+
+Code
+class Solution:
+    def fib(self, n: int) -> int:
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        ans1 = self.fib(n-1)
+        ans2 = self.fib(n-2)
+        
+        return ans1 + ans2
