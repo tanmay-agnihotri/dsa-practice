@@ -1,0 +1,37 @@
+problem link : https://leetcode.com/problems/ransom-note/description/
+Intuition
+To determine whether the ransom note can be constructed , i first count the freq of each required charcater in the rasnom note using hash map ,
+
+I also maintain another hash map to store the freq of charcaters encountered while traversing the magazine , whenever the freq of a character in magazine matches its required freq in ransom note , i increment a vraiable have.
+
+The varibale required represents the number of unique charcaters that must satisfy the required frequencies, if have becomes equal to required , it means every required charcater has beeen found , in sufficient quantity so i return True , if the traversal of the magazine finishes before all required frequencies are satisfied i return false.
+
+Complexity
+Time complexity:
+O(n+m) :
+n = length of ransomNote
+m = length of magazine
+Building the target frequency map takes O(n), and traversing the magazine takes O(m).
+
+Space complexity:
+O(k)
+
+Where k is the number of distinct characters stored in the hash maps.
+Since the problem contains only lowercase English letters, the auxiliary space is effectively O(1).
+
+Code
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        target = {}
+        for ch in ransomNote:
+            target[ch] = target.get(ch,0) + 1
+        required = len(target)
+        freq = {}
+        have = 0
+        for ch in magazine:
+            freq[ch] = freq.get(ch,0) + 1
+            if ch in target and freq[ch] == target[ch]:
+                have += 1
+            if have == required:
+                return True
+        return False
