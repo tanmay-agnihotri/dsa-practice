@@ -1,0 +1,38 @@
+problem link : https://leetcode.com/problems/maximum-number-of-balloons/description/
+
+Intuition
+to determine the maximum number of times the world balloon can be formed , i first count the freq of each characters required to cuild the world usind a hash map .
+
+next i count the freq of every character present in the input string TEXT , for each required character i calaculate how many complete copies of baloon that character can support by performing integer division ,
+
+have[ch] = freq of ch in text
+need[ch] = freq of ch in balloon
+
+the expression have[ch] // ned[ch] gives maximum number of complete words that can be formed using that particular charcater.
+
+Since every character is required to build the word , the overall answer is limited by the character that can support the fewest copies, therefore i return the minimum value among all required characters
+
+Complexity
+Time complexity:
+O(7) + O(n) + O(5) = O(n)
+
+Space complexity:
+O(26) = O(1)
+
+Code
+class Solution:
+    def maxNumberOfBalloons(self, text: str) -> int:
+        s = "balloon"
+        need = {}
+        for ch in s:
+            need[ch] = need.get(ch,0) + 1
+        have = {}
+        for ch in text:
+            have[ch] = have.get(ch,0) + 1
+
+       
+        formed = []
+        for i ,ch in enumerate(need):
+            formed.append(have.get(ch,0) // need.get(ch,0))
+        
+        return min(formed)
