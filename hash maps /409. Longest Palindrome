@@ -1,0 +1,40 @@
+problem link : https://leetcode.com/problems/longest-palindrome/description/
+
+Intuition
+A palindrome has the property that every character appears an even number of times , except for one character taht appears an odd number of times that occupy centre of palindrome.
+
+i first count the freq of every character using a hash map .
+
+then i iterate through the freq map :
+
+if a character has an even frequency , i add all of its occurences to the answer since they can be placed symmetrically in the palindrome.
+if a character has an odd freq i add it's largest even contribution (freq -1) to the answer and mark that an odd freq exists.
+
+after processing all characters if at least one odd freq was found , i add 1 to the result to place one of the remaining odd characters at the centre of palindrome.
+
+Complexity
+Time complexity:
+O(n)
+Building the frequency map takes O(n).
+Traversing the frequency map takes O(k), where k is the number of distinct characters.
+Overall complexity is O(n)
+
+Space complexity:
+O(k)
+Where k is the number of distinct characters stored in the hash map.
+
+Code
+class Solution:
+    def longestPalindrome(self, s: str) -> int:
+        freq = {}
+        for ch in s:
+            freq[ch] = freq.get(ch,0) + 1
+        odd = False
+        result = 0
+        for ch in freq:
+            if freq[ch] % 2 == 0:
+                result += freq[ch]
+            else:
+                odd = True
+                result += freq[ch] - 1
+        return result + 1 if odd else result
