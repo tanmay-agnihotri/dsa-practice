@@ -1,0 +1,74 @@
+problem link : https://leetcode.com/problems/subsets/description/
+Intuition
+Every element in the array presents 2 choices.
+
+include the current element in the subset
+exclude the current element from the subset
+we explore both possibilities recursively for every index . Once all elements have been processed , the current subset represents one valid answer and is added to the result.
+
+To efficiently explore all combinations , we use backtracking , whenever we choose to include an element we add it to current subset, recursively explore all possibilities , and then remove it before returning. This restores the subset to its previous state so the remaining choices can be explored correctly.
+
+Approach
+create 2 lists , resut to store all subsets , temp to store current subset
+
+define a recursive functon dfs(i) where i represents the current index
+
+base case: if i == len(nums) all elements have been considered.
+store a copy of temp in result and return
+
+recursive choices: don't take the current element and recurse to the next index.
+
+take the current element by appending it to temp, recurse and then remove it by using pop() to backtrack
+
+start recursion from index 0
+
+DRY RUN
+suppose nums = [1,2]
+
+decision tree:
+[]
+/
+don't 1 take 1
+/ \ /
+[] [2]. [1] [1,2]
+
+generated subsets:
+[]
+[1]
+[2]
+[1,2]
+
+Complexity
+Time complexity:
+each element has 2 choices , include it or exclude it , for n elements there are (2^n) choices creating a copy of each subset takes upto O(n) time
+therefore : O(n*2^n)
+
+Space complexity:
+Ignoring the output:
+Recursion stack: O(n)
+Temporary subset (temp): O(n)
+
+So the auxiliary space is:
+
+Space Complexity: O(n)
+
+If we include the output storage, the total space required is:
+
+Output Space: O(n × 2ⁿ)
+
+Code
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        temp = []
+        result = []
+        n = len(nums)
+        def dfs(i):
+            if i == n:
+                result.append(temp.copy())
+                return
+            dfs(i+1)
+            temp.append(nums[i])
+            dfs(i+1)
+            temp.pop()
+        dfs(0)
+        return result
