@@ -1,0 +1,50 @@
+problem link https://leetcode.com/problems/generate-parentheses/description/
+Intuition
+we use backtracking to generate all valid parenthesis combinations.
+
+at each recursie call we maintain
+
+start_count, number of "(" used so far
+close_count number of ')' used so far
+curr = current valid parenthesis string should built
+
+we have two choices
+
+add '(' only if start count < n
+add ')' only if close count < start count
+this ensures we never create an invalid parenthesis sequence
+when both open count and close count becomes n we have constructed , a valid parenthesis string so we add it in or answer
+
+we use a list cur to efficiently build the string , after exploring a choice , we remove the last character using pop() to restore the revious state before exploring the next choice. this is the backtracking step
+
+Complexity
+Complexity Analysis
+
+Let Cₙ be the nth Catalan number, which is the number of valid parenthesis combinations.
+
+Time Complexity: O(Cₙ × n)
+There are Cₙ valid strings.
+Each string has length 2n, and converting curr into a string using "".join(curr) takes O(n) time.
+Auxiliary Space: O(n)
+The recursion stack and the curr list can grow up to 2n characters, which is O(n).
+Output Space: O(Cₙ × n)
+Required to store all valid parenthesis strings.
+
+Code
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        result = []
+        def fun(start,close,curr):
+            if start == n and close == n:
+                result.append("".join(curr))
+                return
+            if start < n:
+                curr.append('(')
+                fun(start+1,close,curr)
+                curr.pop()
+            if close < start:
+                curr.append(')')
+                fun(start,close+1,curr)
+                curr.pop()
+        fun(0,0,[])
+        return result
