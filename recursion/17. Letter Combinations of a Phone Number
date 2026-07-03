@@ -1,0 +1,59 @@
+problem link: https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
+Intuition
+we use backtracking to generate all possible letter combinations.
+A hash map stores the mapping of each digit(2-9) to its corresponding letters on a phone keypad.
+
+we recursively process one digit at a time.
+
+at each recursive call:
+i represents the current digit being processed, diary stores the letters chosen so far.
+
+for the current digit we iterate through all possible letters, for each letter , add it to diary , recursively process the next digit . Remove the letter to restore previous state backtracking.
+
+when i reaches the length of input string we have formed one complete letter combination so we will add it to the answer.
+
+if the input string is empty , we return an empty list since there are no possible combinations
+
+Complexity
+Time complexity:
+O(n*4^n) In the worst case, each of the n digits has 4 choices.
+There are at most 4ⁿ combinations.
+Constructing each combination using "".join(curr) takes O(n) time.
+
+Space complexity:
+Auxiliary Space: O(n)
+The recursion stack and the curr list can grow to at most n characters.
+Output Space: O(n × 4ⁿ)
+Required to store all generated combinations.
+
+Code
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+        hash_map = {}
+        hash_map[2] = "abc"
+        hash_map[3] = "def"
+        hash_map[4] = "ghi"
+        hash_map[5] = "jkl"
+        hash_map[6] = "mno"
+        hash_map[7] = "pqrs"
+        hash_map[8] = "tuv"
+        hash_map[9] = "wxyz"
+        
+        diary = []
+        result = []
+        n = len(digits)
+        def fun(i):
+            if n == 0:
+                return []
+                
+            if i == n:
+                result.append("".join(diary))
+                return
+            
+            string_choice = hash_map[int(digits[i])]
+            for j in range(len(string_choice)):
+                diary.append(string_choice[j])
+                fun(i+1)
+                diary.pop()
+        fun(0)
+        return result
