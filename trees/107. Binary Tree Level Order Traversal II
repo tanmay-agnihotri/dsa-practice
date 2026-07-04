@@ -1,0 +1,32 @@
+problem link : https://leetcode.com/problems/binary-tree-level-order-traversal-ii/description/
+Intuition
+We need to return the level order traversal of a binary tree from bottom to top. Instead of traversing the tree in reverse, we can perform a normal Breadth-First Search (BFS) to collect the nodes level by level from top to bottom. Once all levels are collected, we simply reverse the final result to obtain the required bottom-up order.
+
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def levelOrderBottom(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root: return []
+        queue , result = deque([root]) , []
+        while queue:
+            current_level = []
+            level_size = len(queue)
+            for i in range(level_size):
+                node = queue.popleft()
+                current_level.append(node.val)
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+            result.append(current_level)
+        return result[::-1]
