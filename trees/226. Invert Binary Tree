@@ -1,0 +1,38 @@
+problem link : https://leetcode.com/problems/invert-binary-tree/description/
+Intuition
+To invert a binary tree we need to swap the left and right child of every node since each subtree itself is a binary tree we can recursively apply the same operation to the left and right subtrees until we reach the leaf node.
+
+Approach
+If the current node is None, return None since there is nothing to invert.
+Swap the left and right children of the current node.
+Recursively invert the left subtree.
+Recursively invert the right subtree.
+Return the root of the inverted tree.
+
+Complexity
+Time complexity:
+O(n)
+Each node is visited exactly once, and only constant-time work (swapping the left and right child pointers) is performed at each node.
+
+Space Complexity
+O(h)
+
+The auxiliary space is due to the recursion stack, where h is the height of the tree.
+
+Balanced tree: O(log n)
+Skewed tree: O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root is None: return root
+        root.left , root.right = root.right , root.left
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        return root
