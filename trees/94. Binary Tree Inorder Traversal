@@ -1,0 +1,49 @@
+problem link : https://leetcode.com/problems/binary-tree-inorder-traversal/description/
+Intuition
+the inorder traversal of a binary tree follows the order.
+left -> root -> right
+
+we recursively traverse the left subtree first, then visit the current node , by adding its value to the result list , and finally traverse the right subtree . A helper function is used to perform the recursive traversal while storing the visited node values in a shared result list.
+
+Approach
+Initialize an empty list result to store the inorder traversal.
+Define a recursive helper function inorder(node).
+If the current node is None, return since there is nothing to traverse.
+Recursively traverse the left subtree.
+Append the current node's value to result.
+Recursively traverse the right subtree.
+Start the recursion from the root node.
+Return the result list after the traversal is complete.
+
+Complexity
+Time complexity:
+O(n) Each node is visited exactly once during the traversal, where n is the number of nodes in the tree.
+
+Space complexity:
+O(h)
+
+The recursive call stack stores at most h recursive calls at any time, where h is the height of the tree.
+
+Best/Average Case (Balanced Tree): O(log n)
+Worst Case (Skewed Tree): O(n)
+
+Note: The result list stores the output and is generally not counted as auxiliary space in interview complexity analysis. If the interviewer asks for the total space including the output, it would be O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+        def inorder(node):
+            if node is None:
+                return
+            inorder(node.left)
+            result.append(node.val)
+            inorder(node.right)
+        inorder(root)
+        return result
