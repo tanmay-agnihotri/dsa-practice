@@ -1,0 +1,45 @@
+problem link:https://leetcode.com/problems/symmetric-tree/description/
+Intuition
+A binary tree is symmetric by if its left and right subtrees are mirror images of each other , instead of checking whether each subtree is symmetric individually we recursively compare correspnoding nodes from opposite sides of the tree.
+at every step
+if both the nodes are none they are symmetrc
+if only one node is none then tree is not symmetric
+if the nodes value differ the tree is not symmetric
+otherwise recursively compare
+the left child of left subtree with rigth vhild of right subtree
+the right child of left subtree with left child of right subtree
+
+both recursive comparison must return True for the tree to be symmetric.
+
+Complexity
+Time Complexity
+O(n)
+
+Each node is visited exactly once during the recursive traversal, where n is the number of nodes in the tree.
+
+Space Complexity
+O(h)
+
+The auxiliary space comes from the recursion stack, where h is the height of the tree.
+
+Balanced tree: O(log n)
+Skewed tree: O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        if root is None: return 
+        def mirror(left_node,right_node):
+            if left_node is None and right_node is None: return True
+            if left_node is None or right_node is None: return False
+            if left_node.val != right_node.val: return False
+            r1 = mirror(left_node.left,right_node.right)
+            r2 = mirror(left_node.right,right_node.left)
+            return r1 and r2
+        return mirror(root.left,root.right)
