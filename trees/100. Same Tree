@@ -1,0 +1,39 @@
+problem link: https://leetcode.com/problems/same-tree/description/
+Intuition
+Two binary trees are considered same if they have same structure and same node values. we can recursively compare the correspnding nodes in both trees , at each step we check,
+if both nodes are None, they are identical
+if only one node is none the trees differ
+if the node values are different the trees differ
+otherwise recursively compare the left subtrees and right subtrees , both comparison must return True for the trees to be identical,
+
+Complexity
+Time Complexity
+O(n)
+
+Each pair of corresponding nodes is visited exactly once, where n is the number of nodes in the smaller tree (or both trees if they have the same size). Every comparison takes constant time, so the overall time complexity is O(n).
+
+Space Complexity
+O(h)
+
+The auxiliary space is due to the recursion stack, where h is the height of the tree.
+
+Best case (balanced tree): O(log n)
+Worst case (skewed tree): O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        if p is None and q is None: return True
+        if p is None or q is None: return False
+        if p.val != q.val : return False
+        r1 = self.isSameTree(p.left,q.left)
+        r2 = self.isSameTree(p.right,q.right)
+        if r1 == True and r2 == True:
+            return True
+        return False
