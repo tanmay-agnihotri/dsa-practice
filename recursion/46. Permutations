@@ -1,0 +1,50 @@
+problem link : https://leetcode.com/problems/permutations/description/
+Intuition
+Every backtracking problem is:
+STATE → CHOICES → RECURSE → UNDO
+
+We need to generate all possible arrangements of the given numbers.
+
+At each step, instead of moving in a fixed order, we decide:
+
+“Which number should I place next in my permutation?”
+
+Since every number can appear exactly once, at every position we choose from the set of unused elements.
+
+So the problem becomes:
+
+Build a permutation step-by-step by picking any unused element at each level.
+
+This naturally forms a decision tree where:
+
+Each level represents one position in the permutation
+Each branch represents choosing one available number
+
+We continue until the permutation has length n.
+
+Complexity
+Time complexity:
+O(n*n!) There are n! permutations
+Each takes O(n) to copy into result
+
+Space complexity:
+O(n) recursion depth + used array (excluding output)
+
+Code
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        diary , result , n = [] , [] , len(nums)
+        used = [False] * n
+        def backtrack():
+            if len(diary) == len(nums):
+                result.append(diary.copy())
+                return
+            for i in range(len(nums)):
+                if used[i] == False:
+                    diary.append(nums[i])
+                    used[i] = True
+                    backtrack()
+                    diary.pop()
+                    used[i] = False
+        backtrack()
+        return result
