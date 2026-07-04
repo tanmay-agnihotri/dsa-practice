@@ -1,0 +1,43 @@
+problem link :https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
+Intuition
+Instead of performing a normal level order traversal , we need to traverse the tree in a zigzag pattern , first level is traversed left to right , the second from right to left and the third from left to right and so on.
+
+we still use a bfs with a queue to process tree level by level , after collecting all nodes at current level , we simply decide wheter to append level as it is or append its reversed version based on current traversal direction.
+
+Complexity
+Time complexity:
+O(n)
+Each node is visited exactly once during the BFS traversal. Reversing current_level takes O(k) time for a level containing k nodes. Since the sum of nodes across all levels is n, the total time spent reversing is also O(n). Therefore, the overall time complexity remains O(n).
+
+Space complexity:
+O(n)
+The queue stores the nodes of one level at a time, which can contain up to O(n) nodes in the worst case. The current_level list stores the values of a single level, and the result list stores all node values (typically considered output space). Therefore, the auxiliary space complexity is O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def zigzagLevelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if root is None: return []
+        result = []
+        queue = deque([root])
+        left_to_right = 1
+        while queue:
+            current_level = []
+            level_size = len(queue)
+            for _ in range(level_size):
+                node = queue.popleft()
+                current_level.append(node.val)
+                if node.left : queue.append(node.left)
+                if node.right : queue.append(node.right)
+            if left_to_right == 1:
+                result.append(current_level)
+            else:
+                result.append(current_level[::-1])
+            left_to_right = 1 - left_to_right
+        return result
