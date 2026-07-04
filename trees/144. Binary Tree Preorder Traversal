@@ -1,0 +1,49 @@
+problem link : https://leetcode.com/problems/binary-tree-preorder-traversal/description/
+Intuition
+In preorder traversal , we visit each node in folowing order.
+root -> left -> right
+
+for every node we first process the current node by adding its value to result list , we then recursively traverse its left subtree followed by its right subtree. this naturally follows the preorder traversal sequence.
+
+Approach
+Initialize an empty list result to store the preorder traversal.
+Define a recursive helper function preorder(node).
+If the current node is None, return since there is nothing to traverse.
+Add the current node's value to result.
+Recursively traverse the left subtree.
+Recursively traverse the right subtree.
+Start the recursion from the root node.
+Return the result list after the traversal is complete.
+
+Complexity
+Time complexity:
+O(n)
+Each node is visited exactly once during the traversal, where n is the number of nodes in the binary tree.
+
+Space complexity:
+O(n)
+The recursive call stack can grow up to the height of the tree h.
+
+Balanced Tree: O(log n)
+Skewed Tree: O(n)
+
+Note: The result list stores the output and is generally not counted as auxiliary space. If the output space is included, the total space complexity becomes O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+        def preorder(node):
+            if node is None:
+                return
+            result.append(node.val)
+            preorder(node.left)
+            preorder(node.right)
+        preorder(root)
+        return result
