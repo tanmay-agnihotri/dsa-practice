@@ -1,0 +1,42 @@
+problem link: https://leetcode.com/problems/combination-sum/description/
+Intuition
+Approach: Backtracking (Include/Exclude at each index)
+for each candidate at index i , we have two choices
+
+skip it - move to i + 1 without adding it to current combination
+take it add it to current combination and stay at index i , since we are allowed to reuse the same element.
+we recurse until either the running total equals target (valid combination found) or we run out of candidates i == n. the total + candiddates[i] <= target checks branches early so we dont recurse into paths that never succeed , thats what keep this efficient rather than blowing up.
+
+since diary is mutable list being shared across recursive calls , we append before recursing and pop after backtracking so it's correctly reset when we try another branches.
+
+Complexity
+Time complexity:
+O(2^t*k) where T is the target value and k is the average length of a combination. The recursion explores many possible combinations, and insertion into the set requires comparing vectors.
+
+Space complexity:
+O(M × k)
+
+where M is the number of unique combinations stored in the set and k is the average size of each combination. Additionally, the recursion stack can grow up to O(T) in the worst case.
+
+Code
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        diary = []
+        result = []
+        n = len(candidates)
+        def fun(i, total):
+            if i == n:
+                if total == target:
+                    result.append(diary.copy())
+                return
+            #choice 1 not taking
+            fun(i+1,total)
+            #choice2 taking it
+            if candidates[i] + total <= target:
+                diary.append(candidates[i])
+                fun(i , total + candidates[i])
+                diary.pop()
+            
+            return
+        fun(0,0)
+        return result
