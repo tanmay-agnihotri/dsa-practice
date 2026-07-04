@@ -1,0 +1,51 @@
+problem link : https://leetcode.com/problems/binary-tree-postorder-traversal/description/
+Intuition
+In postorder traversal , we visit each node in following order.
+left -> right -> root
+instead of processing the current node immediately , we first recurse its left subtree , then its right subtree, only after both subtrees have been completely explored , do we add current node's value to thr result list.
+this ensures every node is visited after all of its desce
+
+Approach
+Initialize an empty list result to store the postorder traversal.
+Define a recursive helper function postorder(node).
+If the current node is None, return since there is nothing to traverse.
+Recursively traverse the left subtree.
+Recursively traverse the right subtree.
+Add the current node's value to result.
+Start the recursion from the root node.
+Return the result list after the traversal is complete.
+
+Complexity
+Time Complexity
+O(n)
+
+Each node is visited exactly once during the traversal, where n is the number of nodes in the binary tree.
+
+Space Complexity
+O(h)
+
+The recursive call stack stores at most h recursive calls at any time, where h is the height of the tree.
+
+Balanced Tree: O(log n)
+Skewed Tree: O(n)
+
+Note: The result list stores the output and is generally not counted as auxiliary space. If the output space is included, the total space complexity becomes O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+        def postorder(node):
+            if node is None:
+                return
+            postorder(node.left)
+            postorder(node.right)
+            result.append(node.val)
+        postorder(root)
+        return result
