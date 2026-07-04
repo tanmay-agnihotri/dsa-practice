@@ -1,0 +1,49 @@
+problem link:https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+Intuition
+We need to traverse the binary tree level by level , from left to right , since nodes are processed in the order they are discovered , a queue is the ideal data structure, we begin with the root node in the queue , for each level we process all nodes , currently in the queue, collect their values and add their children to the queue for next level , repeating this until queue becomes empty , gives us the level order traversal.
+
+Approach
+if the tree is empty return an empty list
+initalize an empty list to store the final level order traversal
+initalize a queue with the root node
+while queue is not empty : create an empty list current_level to store the values of current level , store the current queue size in level size , this represents the number of nodes present at the current level
+process exactly level size nodes , remove front node form queue. add its value to current level , if the node has left child add it to queue , if the node has right child , add it to queue.
+append current level to result
+return result
+
+Complexity
+Time complexity:
+O(n)
+Each node is added to the queue once and removed from the queue once. Therefore, every node is processed exactly one time.
+
+Space Complexity
+O(n)
+
+In the worst case, the queue stores all the nodes at the widest level of the tree. In a complete binary tree, this can be approximately n/2 nodes, which is O(n). The result list also stores all node values, but it is considered the output and is generally not counted as auxiliary space.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+        result = [] 
+        queue = deque([root])
+        while queue:
+            current_level = []
+            level_size = len(queue)
+            for i in range(level_size):
+                node = queue.popleft()
+                current_level.append(node.val)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            result.append(current_level)
+        return result
