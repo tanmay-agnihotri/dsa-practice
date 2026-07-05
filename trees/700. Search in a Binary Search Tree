@@ -1,0 +1,48 @@
+problem link : https://leetcode.com/problems/search-in-a-binary-search-tree/description/
+Intuition
+A binary search treee BSt) has a special property ALL nodes in the left subtree have values smaller tahn the currrent node. All nodes in the right subtree have values greater than current node.
+
+instead of searching both subtrees like a normal binary treee we use this property to eliminate half of the treee at each step , at every node we compare its value with the target vale.
+
+If the values are equal, we have found the required node.
+If the target is smaller, continue searching in the left subtree.
+If the target is larger, continue searching in the right subtree.
+
+This allows us to follow only a single path from the root until we either find the target or reach a None node.
+
+Complexity
+Time Complexity: O(h)
+
+We only traverse one path from the root to a leaf, where h is the height of the BST.
+
+Balanced BST: O(log n)
+Skewed BST: O(n)
+
+Space Complexity: O(h)
+
+The recursion stack can grow up to the height of the tree.
+
+Balanced BST: O(log n)
+Skewed BST: O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        ans = None
+        def fun(node):
+            nonlocal ans
+            if node is None: return
+            if node.val > val:
+                fun(node.left)
+            elif node.val < val:
+                fun(node.right)
+            else: ans = node
+            return
+        fun(root)
+        return ans
