@@ -1,0 +1,55 @@
+problem link:https://leetcode.com/problems/flip-equivalent-binary-trees/description/
+Intuition
+At every node we have two possible ways for the trees to be flip equivalent,
+
+without fliiping at current node
+left subtreee should match left subtree , and right subtree should match right subtree
+with flipping the current node, left subtree should match right subtree and right subtree should match left subtree
+if either of these possibilities is valid , then the current pair of node is flip equivalent.
+
+efore exploring these possibilities, we handle the base cases:
+
+If both nodes are None, they are equivalent.
+If only one node is None, they cannot be equivalent.
+If the node values differ, no amount of flipping can make them equal.
+
+Complexity
+⏱️ Time Complexity
+
+Let n be the number of nodes in the smaller tree.
+
+Each recursive call compares a pair of nodes.
+In the worst case, both the without flip and with flip possibilities are explored at many nodes.
+This can lead to revisiting different subtree pairings, giving a worst-case time complexity of O(n²).
+
+Time Complexity: O(n²) (worst case)
+
+📦 Space Complexity
+
+The extra space comes from the recursion stack.
+
+In the worst case (a skewed tree), the recursion depth is equal to the height of the tree.
+
+Space Complexity: O(h)
+
+Worst case: O(n) (skewed tree)
+Balanced tree: O(log n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flipEquiv(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
+        def dfs(node1,node2):
+            if node1 is None and node2 is None: return True
+            if node1 is None or node2 is None: return False
+            if node1.val != node2.val: return False
+            without_flip = dfs(node1.left,node2.left) and dfs(node1.right,node2.right)
+            flip = dfs(node1.left, node2.right) and dfs(node1.right , node2.left)
+            return without_flip  or flip
+        return dfs(root1,root2)
+     
