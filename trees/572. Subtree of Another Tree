@@ -1,0 +1,61 @@
+problem link : https://leetcode.com/problems/subtree-of-another-tree/description/
+Intuition
+The problem asks us to determine whether subroot exsists as a subtree of root.
+
+we can break the problem into two simpler taks.
+
+compare two trees to check if they are exactly identical.
+search every node in main tree and at each node check whether the subtree rooted there is identical to subroot.
+to compare two trees we reuse the recursive approach from lc100 same tree , if the current node does not match subroot we recursively continue , searching in the left and right subtrees , if any subtree matches we return True.
+
+Complexity
+Time complexity:
+Let:
+N = Number of nodes in root
+M = Number of nodes in subRoot
+Time Complexity
+In the worst case, we attempt to match subRoot starting from every node in root.
+Each call to sameTree() may compare up to M nodes.
+Time Complexity: O(N × M)
+
+Space complexity:
+Space Complexity
+The recursive search (isSubtree) can go as deep as the height of root.
+The recursive comparison (sameTree) can go as deep as the height of subRoot.
+These recursive calls are not nested indefinitely; at any moment, the maximum recursion stack is proportional to the combined heights of the trees.
+Space Complexity: O(H₁ + H₂)
+
+where:
+
+H₁ = height of root
+H₂ = height of subRoot
+
+In the worst case of completely skewed trees:
+
+Space Complexity: O(N + M)
+
+In balanced trees:
+
+Space Complexity: O(log N + log M)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+        def sameTree(root1,root2):
+            if root1 is None and root2 is None:
+                return True
+            if root1 is None or root2 is None:
+                return False
+            if root1.val != root2.val: return False
+            r1 = sameTree(root1.left,root2.left)
+            r2 = sameTree(root1.right,root2.right)
+            return r1 and r2
+        if root is None:return False
+        if sameTree(root,subRoot): return True
+        return self.isSubtree(root.left,subRoot) or self.isSubtree(root.right,subRoot)
