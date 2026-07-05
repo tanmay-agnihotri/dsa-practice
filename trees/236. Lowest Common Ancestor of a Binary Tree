@@ -1,0 +1,43 @@
+problem link : https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/description/
+Intuition
+The idea is to perform a postorder bfs where each recursive call returns the number of target nodes(p,q) fount in current subtree.
+
+For every node we gather information like , the left subtree , the right subtree , and the current node itself .
+the total count tells us how many of the target nodes are present in the current subtree where node is pointing.
+
+since we traverse in post order the children are processed before the parent, therefore the first node whose subtree contains both target nodes (total == 2) must be the lowest common ancestor, we store thisnode only once and ignore all of its ancestors.
+
+Complexity
+Complexity Analysis
+
+Time Complexity: O(n)
+
+Every node is visited exactly once during the DFS traversal.
+
+Space Complexity: O(h)
+
+The recursive call stack can grow up to the height of the tree, where h is the height of the binary tree. In the worst case (a skewed tree), this becomes O(n), while for a balanced tree it is O(log n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        ans = None
+        def lca(node):
+            nonlocal ans
+            if node is None: return 0
+            left = lca(node.left)
+            right = lca(node.right)
+            itself = 0
+            if node is p or node is q: itself = 1
+            total = left + right + itself
+            if total == 2 and ans is None: ans = node
+            return total
+        lca(root)
+        return ans
