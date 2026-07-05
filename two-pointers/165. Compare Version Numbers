@@ -1,0 +1,60 @@
+problem link : https://leetcode.com/problems/compare-version-numbers/description/
+165. Compare Version Numbers
+
+tanmay_agnihotri
+0
+a few seconds ago
+Python3
+Intuition
+A version number is made up of multiple revisions separated by dots.
+"1.0.3" -> [1, 0, 3]
+"1.0.10" -> [1, 0, 10]
+Instead of comparing the entire strings, we compare each revision from left to right.
+
+The first revision where the values differ determines which version is greater.
+
+If one version has fewer revisions, every missing revision is considered 0
+example
+1.0
+1.0.0.0
+
+↓
+
+1 0 0 0
+1 0 0 0
+so they are equal
+
+Approach
+Split both version strings using ".".
+Convert every revision into an integer.
+This automatically removes leading zeros.
+Maintain two pointers, one for each version.
+While either version still has revisions:
+If a pointer has crossed its array, treat its value as 0.
+Compare the current revisions.
+If one is larger, return immediately.
+Otherwise move both pointers forward.
+If every revision matches, return
+Complexity
+Time complexity:
+O(n+m)
+
+Space complexity:
+O(n+m)
+
+Code
+class Solution:
+    def compareVersion(self, version1: str, version2: str) -> int:
+        list1 = list(map(int, version1.split('.')))
+        list2 = list(map(int, version2.split('.')))
+        ptr1 = ptr2 = 0
+        while ptr1 < len(list1) or ptr2 < len(list2):
+            if ptr1 < len(list1): x = list1[ptr1]
+            else : x = 0
+            if ptr2 < len(list2): y = list2[ptr2]
+            else: y = 0
+            if x < y: return -1
+            if x > y : return 1
+            ptr1 += 1
+            ptr2 += 1
+        return 0
