@@ -1,0 +1,47 @@
+problem link : https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+ntuition
+A Binary Search Tree (BST) follows a special ordering property:
+
+All nodes in the left subtree have smaller values than the current node.
+All nodes in the right subtree have larger values than the current node.
+
+Using this property, we can determine where both target nodes (p and q) lie without exploring the entire tree.
+
+If both p and q have values smaller than the current node, then their Lowest Common Ancestor (LCA) must also lie in the left subtree.
+If both have values greater than the current node, then their LCA must lie in the right subtree.
+Otherwise, the current node is the point where the paths to p and q diverge (or one of them is the current node itself), making it their Lowest Common Ancestor.
+
+Since we eliminate one entire subtree at every step, we only traverse a single path from the root.
+
+Complexity
+Complexity Analysis
+
+Time Complexity: O(h)
+
+We only traverse one path from the root to the answer, where h is the height of the BST.
+
+Balanced BST: O(log n)
+Skewed BST: O(n)
+
+Space Complexity: O(h)
+
+The recursion stack can grow up to the height of the tree.
+
+Balanced BST: O(log n)
+Skewed BST: O(n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        def fun(node):
+            if node.val > p.val and node.val > q.val: return fun(node.left)
+            if node.val < p.val and node.val < q.val: return fun(node.right)
+            return node
+        return fun(root)
