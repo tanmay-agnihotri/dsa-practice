@@ -1,0 +1,43 @@
+problem link: https://leetcode.com/problems/validate-binary-search-tree/description/
+Intuition
+
+The key property of a Binary Search Tree is that its inorder traversal always visits nodes in strictly increasing order.
+
+So instead of checking every node against its ancestors, we can simply perform an inorder traversal while remembering the previously visited node.
+
+If the current node's value is greater than the previous node's value, the BST property still holds.
+If the current node's value is less than or equal to the previous node's value, the inorder sequence is no longer strictly increasing, so the tree cannot be a valid BST.
+
+Complexity Analysis
+Time Complexity: O(n)
+Every node is visited exactly once.
+Space Complexity: O(h)
+Due to the recursion stack, where h is the height of the tree.
+Worst case (skewed tree): O(n)
+Balanced tree: O(log n)
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        ans = True
+        prev = None
+        def inorder(node):
+            nonlocal prev , ans
+            if node is None or ans == False: return
+            inorder(node.left)
+            if prev is None:
+                prev = node
+            else:
+                if node.val <= prev.val:
+                    ans = False
+                prev = node
+            inorder(node.right)
+            return
+        inorder(root)
+        return ans
