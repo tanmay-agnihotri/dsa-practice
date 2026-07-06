@@ -1,0 +1,106 @@
+problem link : https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/
+Intuition
+The BST's inorder traversal produces nodes in sorted order, making the problem similar to finding two numbers in a sorted array.
+
+Instead of storing the entire inorder traversal in an array, we simulate the two-pointer technique directly on the BST.
+
+This approach is the BST equivalent of applying the two-pointer technique on a sorted array, without explicitly constructing the inorder traversal.
+
+One iterator generates nodes in ascending order (smallest to largest).
+Another iterator generates nodes in descending order (largest to smallest).
+
+At every step:
+
+If the current sum equals k, we've found the required pair.
+If the sum is smaller than k, we advance the ascending iterator to get a larger value.
+If the sum is greater than k, we advance the descending iterator to get a smaller value.
+
+The process stops when both iterators point to the same node, since using the same node twice is not allowed.
+
+Approach
+Maintain two stacks:
+asc_stack for the inorder iterator.
+dsc_stack for the reverse inorder iterator.
+Implement two helper functions:
+get_next_smallest()
+Push all left descendants onto the stack.
+Pop the top node (next smallest).
+Move to its right subtree for future calls.
+get_next_largest()
+Push all right descendants onto the stack.
+Pop the top node (next largest).
+Move to its left subtree for future calls.
+Initialize:
+left with the smallest node.
+right with the largest node.
+While both iterators point to different nodes:
+Compute left.val + right.val.
+If it equals k, return True.
+If the sum is smaller than k, move the left iterator.
+Otherwise, move the right iterator.
+If the iterators meet without finding a valid pair, return False.
+
+Complexity
+Time Complexity: O(n)
+
+Each node is pushed onto and popped from its respective stack at most once. Therefore, across both iterators, every node is processed a constant number of times.
+
+Space Complexity: O(h)
+
+Each stack stores at most the height of the BST, where h is the tree height. In the worst case of a skewed tree, this becomes O(n), while for a balanced BST it is O(log n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def findTarget(self, root: Optional[TreeNode], k: int) -> bool:
+        if root is None:
+            return False
+
+        asc_stack = []
+        dsc_stack = []
+
+        left_node = root
+        right_node = root
+
+        def get_next_smallest():
+            nonlocal left_node
+
+            while left_node is not None:
+                asc_stack.append(left_node)
+                left_node = left_node.left
+
+            curr = asc_stack.pop()
+            left_node = curr.right
+            return curr
+
+        def get_next_largest():
+            nonlocal right_node
+
+            while right_node is not None:
+                dsc_stack.append(right_node)
+                right_node = right_node.right
+
+            curr = dsc_stack.pop()
+            right_node = curr.left
+            return curr
+
+        left = get_next_smallest()
+        right = get_next_largest()
+
+        while left != right:
+            curr_sum = left.val + right.val
+
+            if curr_sum == k:
+                return True
+            elif curr_sum < k:
+                left = get_next_smallest()
+            else:
+                right = get_next_largest()
+
+        return False
