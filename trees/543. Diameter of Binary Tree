@@ -1,0 +1,51 @@
+problem link: https://leetcode.com/problems/diameter-of-binary-tree/description/
+
+Intuition
+The diameter of a binary tree is the length of the longest path between any two nodes. This path may or may not pass through the root.
+
+For every node, if we know the heights of its left and right subtrees, then the longest path passing through that node is simply:
+
+left_height + right_height
+
+As we recursively compute the height of each subtree, we can simultaneously calculate the diameter passing through every node and maintain the maximum diameter encountered so far.
+
+Since each recursive call returns the height of the current subtree, the parent node can use this information to compute its own height and potential diameter.
+
+Approach
+Initialize a variable result to store the maximum diameter found during the traversal.
+Create a recursive helper function solve(node) that returns the height of the subtree rooted at node.
+If the current node is None, return 0.
+Recursively compute the heights of the left and right subtrees.
+The longest path passing through the current node is left_height + right_height.
+Update result if this path is larger than the current maximum diameter.
+Return 1 + max(left_height, right_height) as the height of the current subtree.
+After the traversal completes, return result.
+
+Complexity
+Time complexity:
+Time Complexity: O(N)
+Every node is visited exactly once, and all computations performed at each node take constant time.
+Space Complexity: O(H)
+The recursion stack can grow up to the height of the tree H.
+In the worst case (a skewed tree), H = N, so the space complexity is O(N).
+For a balanced tree, H = O(log N).
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        result = 0
+        def solve(node):
+            nonlocal result
+            if node is None: return 0
+            left = solve(node.left)
+            right = solve(node.right)
+            total = left + right
+            result = max(total,result)
+            return 1 + max(left,right)
+        solve(root)
+        return result
