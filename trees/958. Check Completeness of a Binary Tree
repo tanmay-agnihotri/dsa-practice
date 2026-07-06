@@ -1,0 +1,40 @@
+problem link:https://leetcode.com/problems/check-completeness-of-a-binary-tree/description/
+Intuition
+Intuition
+
+A complete binary tree is filled level by level from left to right. This means that once we encounter the first missing child (None) during a level order traversal, every node visited afterward must also be None.
+
+So, while performing a BFS:
+
+If we encounter a None, we mark that we've seen the first empty position.
+If we later encounter a valid node after that, it means there is a gap in the tree before this node, violating the definition of a complete binary tree.
+
+Complexity
+Time Complexity: O(n)
+Every node (and its None children) is processed at most once.
+Space Complexity: O(n)
+In the worst case, the queue stores all nodes of the last level.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def isCompleteTree(self, root: Optional[TreeNode]) -> bool:
+        if root is None: return True
+        null_seen = False
+        queue = deque([root])
+        while queue:
+            node = queue.popleft()
+            if node is None: 
+                null_seen = True
+            else:
+                if null_seen == True:
+                    return False
+                queue.append(node.left)
+                queue.append(node.right)
+        return True
