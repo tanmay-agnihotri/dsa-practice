@@ -1,0 +1,41 @@
+problem link: https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
+Intuition
+A BST has a special property: its inorder traversal visits nodes in sorted order.
+
+Instead of performing a complete inorder traversal and storing all the values, we can simulate an inorder iterator using a stack. Each call to the iterator returns the next smallest element in the BST.
+
+Therefore, if we advance the iterator k times, the last value returned will be the kth smallest element.
+
+Complexity
+Time Complexity: O(H + k)
+Initially, the iterator may traverse down the leftmost path of the tree, taking O(H) time, where H is the height of the BST.
+Each subsequent call to the iterator processes exactly one node, and we invoke it k times.
+Therefore, the total complexity is O(H + k).
+In the worst case (a skewed tree or when k = n), this becomes O(n).
+Space Complexity: O(H)
+The stack stores at most one root-to-leaf path.
+For a balanced BST, this is O(log n).
+In the worst case of a skewed BST, it becomes O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        stack = []
+        node = root
+        def bst_iterator():
+            nonlocal node
+            while node:
+                stack.append(node)
+                node = node.left
+            curr = stack.pop()
+            node = curr.right
+            return curr.val
+        for _ in range(k):
+            ans = bst_iterator()
+        return ans
