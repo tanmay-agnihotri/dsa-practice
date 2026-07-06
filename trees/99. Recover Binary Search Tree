@@ -1,0 +1,83 @@
+Problem link : https://leetcode.com/problems/recover-binary-search-tree/description/
+### Approach
+
+A Binary Search Tree (BST) has the property that its inorder traversal produces nodes in **sorted order**. If two nodes are swapped, this sorted order gets violated.
+
+During the inorder traversal, I maintain a pointer `prev` to the previously visited node. Whenever I find that `prev.val > current.val`, I have found an inversion (or a "mistake").
+
+There are two possible cases:
+
+1. **Only one inversion occurs** (adjacent nodes were swapped).
+
+   * Store the two nodes involved in this inversion as:
+
+     * `galti1_first`
+     * `galti1_second`
+
+2. **Two inversions occur** (non-adjacent nodes were swapped).
+
+   * Store the nodes of the second inversion as:
+
+     * `galti2_first`
+     * `galti2_second`
+
+After the traversal:
+
+* If there was only **one inversion**, the swapped nodes are `galti1_first` and `galti1_second`.
+* If there were **two inversions**, the actual swapped nodes are the first node of the first inversion (`galti1_first`) and the second node of the second inversion (`galti2_second`).
+
+Finally, swap the values of the identified nodes to restore the BST.
+
+### Complexity Analysis
+
+* **Time Complexity:** `O(n)`
+
+  * Every node is visited exactly once during the inorder traversal.
+
+* **Space Complexity:** `O(h)`
+
+  * Due to the recursion stack, where `h` is the height of the tree.
+  * In the worst case (skewed tree), `h = n`.
+  * In a balanced BST, `h = log n`.
+
+
+# Code
+```python3 []
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        prev = galti1_first = galti1_second = galti2_first = galti2_second = None
+        galti = 0
+        def inorder(node):
+            nonlocal prev , galti1_first , galti1_second , galti2_first , galti2_second , galti
+            if node is None:return
+            inorder(node.left)
+            if prev is None:
+                prev = node
+            else:
+                if node.val < prev.val:
+                    if galti == 0:
+                        galti1_first = prev
+                        galti1_second = node
+                        galti += 1
+                    else:
+                        galti2_first = prev
+                        galti2_second = node
+                        galti += 1
+                prev = node
+            inorder(node.right)
+            return
+        inorder(root)
+        if galti == 1:
+            galti1_first.val , galti1_second.val = galti1_second.val , galti1_first.val
+        else:
+            galti1_first.val , galti2_second.val = galti2_second.val , galti1_first.val
+```
