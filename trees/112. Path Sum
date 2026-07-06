@@ -1,0 +1,49 @@
+problem link :https://leetcode.com/problems/path-sum/description/
+🧠 Intuition
+
+We explore every root-to-leaf path using DFS while maintaining the running sum of the current path.
+
+If we reach a leaf node and the running sum equals targetSum, we mark that a valid path exists.
+
+We use a shared flag to stop early once a valid path is found.
+
+⚙️ Approach
+Use DFS recursion to explore the tree.
+Maintain total as the sum from root to current node.
+At each node:
+Add node value to total
+If it's a leaf:
+Check if total == targetSum
+Use a global flag (path_sum_exists) to store result.
+Stop recursion early if answer is already found.
+
+⏱ Complexity
+Time Complexity: O(N)
+Each node is visited once.
+Space Complexity: O(H)
+Recursion stack depth = height of tree.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        path_sum_exists = False
+        def fun(node , total):
+            nonlocal path_sum_exists
+            if node is None or path_sum_exists:
+                return 
+            total += node.val
+            if node.left is None and node.right is None:
+                if total == targetSum:
+                    path_sum_exists = True
+                    return
+            fun(node.left , total)
+            fun(node.right , total)
+            return
+        fun(root,0)
+        return path_sum_exists 
