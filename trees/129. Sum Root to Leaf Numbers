@@ -1,0 +1,52 @@
+problem link: https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
+129. Sum Root to Leaf Numbers
+
+tanmay_agnihotri
+0
+a few seconds ago
+Python3
+🧠 Intuition
+
+Each root-to-leaf path represents a number formed by concatenating digits from root to leaf.
+
+We perform DFS traversal, and at each node we “build” the current number by shifting previous digits left (×10) and adding the current node value.
+
+When we reach a leaf node, we add the formed number to the final result.
+
+⚙️ Approach
+Use DFS to explore all root-to-leaf paths.
+Maintain a running number total.
+At each node:
+Update number: total = total * 10 + node.val
+If node is a leaf:
+Add total to result
+Continue traversal for left and right children.
+
+⏱ Complexity
+Time Complexity: O(N)
+Each node is visited once.
+Space Complexity: O(H)
+Recursion stack where H is tree height.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sumNumbers(self, root: Optional[TreeNode]) -> int:
+        result = 0
+        def fun(node ,total):
+            nonlocal result
+            if node is None: return
+            total = total*10 + node.val
+            if node.left is None and node.right is None:
+                result += total
+                return
+            fun(node.left, total)
+            fun(node.right ,total)
+            return
+        fun(root,0)
+        return result
