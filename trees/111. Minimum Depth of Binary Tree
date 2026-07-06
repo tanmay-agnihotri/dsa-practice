@@ -1,0 +1,38 @@
+problem link : https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
+Intuition
+The minimum depth of a binary tree is the number of nodes along the shortest path from the root to the nearest leaf node.
+
+We can recursively compute the minimum depth of the left and right subtrees. However, if a node has only one child, we cannot take the minimum of the two depths because the missing child does not represent a valid root-to-leaf path. In such cases, we must continue through the existing child.
+
+For each node:
+
+If only one child exists, the minimum depth comes from that child.
+If both children exist (or the node is a leaf), the minimum depth is 1 + min(left_depth, right_depth).
+
+Complexity
+Time Complexity: O(N)
+Each node is visited exactly once, where N is the number of nodes in the tree.
+Space Complexity: O(H)
+The recursion stack can grow up to the height of the tree H.
+In the worst case (a skewed tree), H = N, so the space complexity becomes O(N).
+For a balanced tree, H = O(log N).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def minDepth(self, root: Optional[TreeNode]) -> int:
+        def solve(node):
+            if node is None: return 0
+            left_height = solve(node.left)
+            right_height = solve(node.right)
+            if node.left is None and node.right is not None:
+                return 1 + right_height
+            elif node.left is not None and node.right is None:
+                return 1 + left_height
+            else : return 1 + min(left_height, right_height)
+        return solve(root)
