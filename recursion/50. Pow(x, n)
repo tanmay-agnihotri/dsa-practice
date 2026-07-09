@@ -1,0 +1,34 @@
+problem link : https://leetcode.com/problems/powx-n/description/
+Intuition
+So the base case should be when n becomes 0 , return 1 as any number with power zero is 1, now there are 2 approaches
+
+approach 1 , if A = 2 ^ 5 , so we can split it like 2 * 2 ^ 4 , and simply then find 2 ^ 3 , and so on till 2 ^ 0 , but the problem is if n is a very large number then doing this approach will take O(n) time , the approach 2 fixes this by reducing time complexity to O(logn)
+
+as we split the number's power to half , so for eg 2^8 , can be done like 2^4 , then we split it to 2^2 then so on ,
+
+in case of odd n , we can do like 2^9 = 2^4 * 2^4 * 2, so pattern is simple,
+
+now there is a possibility when n is negative then what to do , so we know a ^ -n = 1/a^n , simply.
+
+Complexity
+Time complexity:
+O(logn)
+
+Space complexity:
+O(logn)
+
+Code
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        def fun(x,n):
+            if n == 0:
+                return 1 
+            half = fun(x,n//2)
+            if n % 2 == 0:
+                return half * half
+            else:
+                return half * half * x
+        if n >= 0:
+            return fun(x,n)
+        else:
+            return 1 /fun(x,-n)
