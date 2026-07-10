@@ -1,0 +1,71 @@
+problem link : https://leetcode.com/problems/palindrome-partitioning/description/
+Intuition
+my approach would be , i will be using recursion and backtracking .
+
+the idea is that evvery recursive call , i am standing at a particular starting index , i try every possible substring that begins here,
+
+if the chosen substring is palindrome i include it in my current diary, and recursivel solve remaining parts of string , After the recursive call finishes, I remove that substring so I can try the next possible choice.
+
+my choices are ,
+not to take or skip a characteer,
+My choice is deciding where my current substring should end.
+
+So for every ending index from start to n-1, I form one substring:
+
+part = s[start:end+1]
+
+If this substring is a palindrome, I choose it and continue recursively.
+
+State
+
+The recursive function is:
+
+backtrack(start)
+
+Here, start represents the first index that has not been partitioned yet.
+
+Base Case
+
+If start == n, it means I have partitioned the entire string into valid palindrome substrings.
+
+So I store a copy of my current partition in the result.
+
+Backtracking
+
+After exploring one choice, I remove the last substring from diary so that I can try the next possible substring.
+
+Complexity
+Time complexity:
+≈ O(2^n*n)
+
+Space complexity:
+Auxilary space - O(n)
+
+Code
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        def palindrome_check(word):
+            left = 0
+            right = len(word) - 1
+            while left <= right:
+                if word[left] != word[right]:
+                    return False
+                left += 1
+                right -=1
+            return True
+            
+        result , diary , n = [] , [] , len(s)
+        def get_all_parts(start):
+            if start == n:
+                result.append(diary.copy())
+                return
+                
+            for end in range(start ,n):
+                part = s[start:end+1]   
+                if palindrome_check(part) == True:
+                    diary.append(part)
+                    get_all_parts(end+1)
+                    diary.pop()
+            return
+        get_all_parts(0)
+        return result      
