@@ -1,0 +1,49 @@
+problem link: https://leetcode.com/problems/subsets-ii/description/
+ntuition
+Approach
+
+First, I sort the array so that all duplicate elements are placed together.
+I use backtracking to generate all possible subsets.
+For every element, I have two choices:
+Include the current element in the subset.
+Exclude the current element.
+While excluding an element, I skip all of its consecutive duplicates. This ensures that duplicate subsets are never generated.
+Every time I reach the end of the array, the current subset is complete, so I add a copy of it to the answer.
+
+Complexity
+Time complexity:
+There are at most 2^n possible subsets.
+Each subset takes O(n) time to copy into the result.
+Therefore, the overall time complexity is:
+O(n × 2^n)
+
+Space complexity:
+The recursion stack can go up to n levels.
+The temporary subset (diary) also stores at most n elements.
+Ignoring the output array, the auxiliary space complexity is:
+
+O(n)
+
+Including the output, the total space is:
+
+O(n × 2^n)
+
+Code
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        result , diary , n = [] , [] , len(nums)
+        def fun(i):
+            if i == n:
+                result.append(diary.copy())
+                return
+            diary.append(nums[i])
+            fun(i+1)
+            diary.pop()
+            idx = i + 1
+            while idx < n and nums[idx] == nums[idx - 1]:
+                idx += 1
+            fun(idx)
+            return
+        fun(0)
+        return result
