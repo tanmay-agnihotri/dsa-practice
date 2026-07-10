@@ -1,0 +1,51 @@
+problem link: https://leetcode.com/problems/combination-sum-ii/description/
+Intuition
+Approach
+First, I sort the candidates array so that duplicate elements come together. This helps in avoiding duplicate combinations and also allows pruning when the current sum exceeds the target.
+
+I use backtracking to generate all possible combinations.
+
+At every recursive call, I use a for loop to decide which element to pick next from the remaining candidates.
+
+After choosing an element, I move to j + 1 because each candidate can be used only once.
+
+To avoid duplicate combinations:
+
+If the current element is the same as the previous element and both are at the same recursion level, I skip it.
+This prevents generating the same combination multiple times while still allowing duplicate values to be used when needed (for example, [1,1,6]).
+Since the array is sorted, if adding the current candidate makes the sum exceed the target, I stop exploring further because all following elements will also be larger.
+
+Time Complexity
+In the worst case, we explore all possible combinations, which is O(2^n).
+Copying each valid combination into the result takes O(k), where k is the length of the combination.
+Overall:
+
+O(n * 2^n)
+Space Complexity
+The recursion depth can go up to n.
+The temporary list diary can store up to n elements.
+Auxiliary space:
+
+O(n)
+The output space is not included.
+
+Code
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        candidates.sort()
+        result , diary , n = [] , [] , len(candidates)
+        def fun(i,total):
+            if total == target:
+                result.append(diary.copy())
+                return
+            for j in range(i,n):
+                if j > i and candidates[j] == candidates[j-1]:
+                    continue
+                if total + candidates[j] > target:
+                    break
+                diary.append(candidates[j])
+                fun(j+1,total+candidates[j])
+                diary.pop()
+            return
+        fun(0,0)
+        return result
