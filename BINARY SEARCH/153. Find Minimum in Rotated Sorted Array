@@ -1,0 +1,57 @@
+problem link : https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
+
+Intuition
+A rotated sorted array can be viewed as two sorted parts.
+
+For example:
+
+[5,6,7,1,2,3,4]
+Here:
+
+Part 2: [5,6,7]
+Part 1: [1,2,3,4]
+Initially, the array was sorted, so every element in Part 1 is smaller than every element in Part 2.
+
+The last element of the rotated array acts as a boundary between these two parts. If nums[mid] is greater than the last element, it means mid belongs to the left rotated part (Part 2), so the minimum element must be on the right side.
+
+Otherwise, mid belongs to the sorted part containing the minimum element. The minimum can either be at mid itself or somewhere on the left, so we continue searching the left half.
+
+Approach
+Initialize two pointers low and high representing the search space.
+
+While low < high:
+
+Find the middle index.
+
+Compare nums[mid] with the last element of the array.
+
+If nums[mid] > nums[-1], mid lies in the left rotated part, so the minimum must be to the right:
+
+low = mid + 1
+Otherwise, mid lies in the part containing the minimum, so keep mid as a possible answer and search the left half:
+
+high = mid
+When the loop ends, low and high point to the same index, which is the minimum element.
+
+Code
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        low = 0
+        high = len(nums) - 1
+
+        while low < high:
+            mid = (low + high) // 2
+
+            if nums[mid] > nums[-1]:
+                low = mid + 1
+            else:
+                high = mid
+
+        return nums[low]
+Complexity Analysis
+Time Complexity: O(log n)
+
+At every step, we reduce the search space by half.
+Space Complexity: O(1)
+
+Only constant extra variables are used.
