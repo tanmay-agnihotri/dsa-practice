@@ -1,0 +1,37 @@
+problem link:https://leetcode.com/problems/peak-index-in-a-mountain-array/description/
+Intuition
+A mountain array is divided into two parts:
+
+The elements are increasing before the peak.
+The elements are decreasing after the peak.
+
+We can use binary search to determine which side of the peak the middle element lies on. If the middle element is smaller than the next element, we are on the increasing slope, so the peak lies to the right. Otherwise, we are on the decreasing slope or at the peak, so the peak lies at the current index or to the left.
+
+Approach
+Initialize two pointers, low and high, representing the search space.
+While low < high:
+Compute the middle index.
+If arr[guess] < arr[guess + 1], the peak lies to the right, so update low = guess + 1.
+Otherwise, the peak is at guess or to its left, so update high = guess.
+When the loop terminates, both pointers point to the peak index. Return low.
+
+Complexity
+Time Complexity
+In each iteration, the search space is reduced by half.
+Time Complexity: O(log n)
+Space Complexity
+Only a constant amount of extra space is used.
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def peakIndexInMountainArray(self, arr: List[int]) -> int:
+        low = 0
+        high = len(arr) - 1
+        while low < high:
+            guess = (low+high)//2
+            if arr[guess] < arr[guess+1]:
+                low = guess + 1
+            else:
+                high = guess
+        return high
