@@ -1,0 +1,38 @@
+problem link:https://leetcode.com/problems/find-peak-element/description/
+Intuition
+A peak element is an element that is greater than its adjacent elements. Instead of checking every element, we can use binary search to determine which side of the array must contain a peak.
+
+By comparing the middle element with its next element, we can identify whether we are on an increasing or decreasing slope:
+
+If nums[mid] < nums[mid + 1], we are on the increasing slope, so there must be at least one peak on the right.
+Otherwise, we are on the decreasing slope or at a peak, so the peak lies at the current index or to its left.
+
+Approach
+Initialize two pointers, low and high, representing the current search space.
+While low < high:
+Compute the middle index.
+If nums[mid] < nums[mid + 1], move to the right half by updating low = mid + 1.
+Otherwise, move to the left half by updating high = mid.
+When the loop terminates, both pointers point to the peak element. Return low.
+
+Complexity
+Time Complexity
+In each iteration, the search space is reduced by half.
+Time Complexity: O(log n)
+Space Complexity
+Only a constant amount of extra space is used.
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        low = 0
+        high = len(nums) -1
+
+        while low < high:
+            mid = (low+high)//2
+            if nums[mid] < nums[mid+1]:
+                low = mid + 1
+            else:
+                high = mid
+        return low
