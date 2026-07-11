@@ -1,0 +1,36 @@
+probelem link : https://leetcode.com/problems/binary-search/description/
+Intuition
+We are given a sorted array, so instead of checking every element, we can repeatedly compare the middle element with the target and eliminate half of the search space each time.
+
+If the middle element is greater than the target, the target must lie in the left half. Otherwise, it must lie in the right half.
+
+Approach
+nitialize two pointers, low and high, representing the current search range.
+While low <= high:
+Find the middle index.
+If the middle element equals the target, return its index.
+If the middle element is greater than the target, search the left half by updating high.
+Otherwise, search the right half by updating low.
+If the loop ends, the target is not present, so return -1.
+
+Time Complexity
+Each iteration removes half of the remaining search space.
+O(log n)
+Space Complexity
+Only a few variables are used.
+O(1)
+
+Code
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        low = 0
+        high = len(nums) - 1  
+        while low <= high:
+            guess = (low+high)//2
+            if nums[guess] == target:
+                return guess
+            if nums[guess] > target:
+                high = guess - 1
+            else:
+                low = guess + 1
+        return - 1
