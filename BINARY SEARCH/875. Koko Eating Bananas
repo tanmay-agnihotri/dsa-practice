@@ -1,0 +1,56 @@
+problem link : https://leetcode.com/problems/koko-eating-bananas/description/
+Intuition
+Instead of searching for answer directly , we binary search on koko's eating speed . The minimum possible speed is 1 banana per hour , while maximum possible speed is size of largest pile , since eating faster than that provides no additional benifit.
+
+for any guessed eating speed , we can calculate the total number of hours koko would need to finish all the piles , if the required time is greater than h the guessed speed is too slow , and we need to increase it , otherwise the speed is sufficient , but we try to find an even smaller valid speed to obtain minimum possible speed.
+
+since increasing the eating speed can only decrease or keep the same total time required, the search space is monotonic , allowing us to apply binary search
+
+Approach
+Set the search range as:
+low = 1
+high = max(piles)
+Create a helper function that computes the total hours required to finish all piles for a given eating speed.
+Perform binary search while low <= high:
+Compute the middle speed.
+Calculate the total hours required at this speed.
+If the required hours are greater than h, the speed is too slow, so search in the right half.
+Otherwise, record the current speed as a possible answer and continue searching in the left half to find a smaller valid speed.
+Return the minimum valid speed found.
+
+Complexity
+Time Complexity
+
+Time: O(n × log(max(piles)))
+
+Each binary search iteration computes the total hours by traversing all n piles, and binary search performs O(log(max(piles))) iterations.
+
+Space Complexity
+
+Space: O(1)
+
+Only a few extra variables are used, regardless of the input size.
+
+Code
+class Solution:
+    def minEatingSpeed(self, piles: List[int], h: int) -> int:
+        def time_taken(piles,speed):
+            time = 0
+            for i in range(len(piles)):
+                time = time + piles[i] // speed
+                if piles[i] % speed != 0:
+                    time += 1
+            return time
+        low = 1
+        high = max(piles)
+        result = -1 
+
+        while low <= high:
+            guessed_speed = (low+high) // 2
+            time_in_guessed_speed = time_taken(piles,guessed_speed)
+            if time_in_guessed_speed > h:
+                low = guessed_speed + 1
+            else:
+                result = guessed_speed
+                high = guessed_speed - 1
+        return result
