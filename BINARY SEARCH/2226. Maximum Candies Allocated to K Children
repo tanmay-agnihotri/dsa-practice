@@ -1,0 +1,97 @@
+problem link : https://leetcode.com/problems/maximum-candies-allocated-to-k-children/description/?envType=problem-list-v2&envId=d79iyml3
+Intuition
+The problem asks us to find the maximum number of candies each child can receive.
+
+While analyzing the problem, I observed that the answer lies in a range:
+
+The minimum possible candies per child can be 1.
+The maximum possible candies per child cannot exceed the largest candy pile.
+Now, instead of finding the answer directly, I can guess a value and ask:
+
+"If each child gets x candies, can I distribute candies to at least k children?"
+
+If I can distribute x candies to all children, then I should try a larger value because we want the maximum possible number.
+
+If I cannot distribute x candies, then I need to try a smaller value.
+
+This gives us a monotonic pattern:
+
+x = 1  2  3  4  5  6  7
+     T  T  T  T  T  F  F
+All smaller values are possible, and after a certain point all values become impossible.
+
+Since we need to find the maximum valid value, we can use Binary Search on Answer.
+
+Approach
+For a guessed value x (candies per child), we need to check how many children can receive exactly x candies.
+
+For each candy pile:
+
+A pile of size pile can create:
+pile // x
+children.
+
+For example:
+
+candies = [8]
+x = 3
+
+8 // 3 = 2
+This means this pile can provide 3 candies to 2 children, with some candies left unused.
+
+We add the contribution of every pile.
+
+If the total number of children is greater than or equal to k, then x candies per child is possible.
+
+Algorithm
+Initialize the binary search range:
+
+low = 1
+high = max(candies)
+For every middle value:
+
+Check if we can distribute mid candies to at least k children.
+If possible:
+
+Store mid as the answer.
+Try to find a larger value by moving right.
+If not possible:
+
+Reduce the search space by moving left.
+Return the maximum possible candies per child.
+
+Complexity Analysis
+Let n be the number of candy piles and m be the maximum candies in a pile.
+
+For every binary search step, we traverse all piles once.
+
+Time Complexity:
+
+O(n * log(m))
+Space Complexity:
+
+O(1)
+Code
+class Solution:
+    def maximumCandies(self, candies: List[int], k: int) -> int:
+        if sum(candies) < k:
+            return 0
+        def equal_candy(guessed):
+            children = 0
+            i = 0
+            while i < len(candies):
+                children += candies[i]//guessed
+                i += 1
+            return children >= k
+        low = 1
+        high = max(candies)
+        result = 0
+        while low <= high:
+            guessed_candies = (low+high)//2
+            candy_distribution = equal_candy(guessed_candies)
+            if candy_distribution == True:
+                result = guessed_candies
+                low = guessed_candies + 1
+            else:
+                high = guessed_candies - 1
+        return result
