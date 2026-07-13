@@ -1,0 +1,66 @@
+problem link : https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/description/?envType=problem-list-v2&envId=d79iyml3
+
+Approach
+The goal is to find the minimum number of days required to make m bouquets, where each bouquet consists of k adjacent bloomed flowers.
+
+Before applying Binary Search, I first handle the impossible case. If the total number of flowers required (m * k) is greater than the number of flowers available, it is impossible to form the required bouquets, so I return -1.
+
+The answer we are searching for is the minimum day on which it becomes possible to make all the required bouquets.
+
+The minimum possible answer is the earliest bloom day, min(bloomDay).
+The maximum possible answer is the latest bloom day, max(bloomDay).
+For a guessed day, I use a helper function can_make_bouquets() to count how many bouquets can be formed.
+
+The helper function scans the array once:
+
+If a flower has bloomed by the guessed day, increase the count of consecutive bloomed flowers.
+If an unbloomed flower is encountered, reset the consecutive count since bouquets require adjacent flowers.
+Whenever the consecutive count reaches k, one bouquet is formed. Increment the bouquet count and reset the consecutive count to 0 because those flowers have already been used.
+After processing all flowers, the helper returns the total number of bouquets that can be made.
+
+Using this helper:
+
+If fewer than m bouquets can be formed, the guessed day is too early, so search in the higher half.
+Otherwise, the guessed day is valid. Store it as a possible answer and continue searching for a smaller valid day.
+This ensures that we find the minimum day required to make all the bouquets.
+
+Time Complexity
+The helper function scans the array once, taking O(n) time.
+Binary Search is performed over the range [min(bloomDay), max(bloomDay)], which takes O(log(max(bloomDay) - min(bloomDay))) iterations.
+Overall Time Complexity: O(n × log(max(bloomDay) - min(bloomDay)))
+
+Space Complexity
+The algorithm only uses a few extra variables while traversing the array.
+
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def minDays(self, bloomDay: List[int], m: int, k: int) -> int:
+        if m * k > len(bloomDay):
+            return - 1
+        def can_make_bouquets(days):
+            consecutive_flowers = 0
+            bouquets_made = 0
+            for i in range(len(bloomDay)):
+                if days >= bloomDay[i]:
+                    consecutive_flowers += 1
+                else:
+                    consecutive_flowers = 0
+                if consecutive_flowers == k:
+                    bouquets_made += 1
+                    consecutive_flowers = 0
+            return bouquets_made
+        
+        low = min(bloomDay)
+        high = max(bloomDay)
+        result = -1
+        while low <= high:
+            guessed_days = (low+high)//2
+            bouquets_formed_in_guessed_days = can_make_bouquets(guessed_days)
+            if bouquets_formed_in_guessed_days < m:
+                low = guessed_days + 1
+            else:
+                result = guessed_days
+                high = guessed_days - 1
+        return result
