@@ -1,0 +1,58 @@
+problem link : https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/description/?envType=problem-list-v2&envId=d79iyml3
+Approach
+The answer we need to find is the minimum ship capacity that allows all packages to be shipped within the given number of days. Since we are looking for the smallest valid capacity, we can apply Binary Search on the answer.
+
+The minimum possible capacity is the weight of the heaviest package because every package must fit on the ship.
+The maximum possible capacity is the sum of all package weights, which allows shipping every package in a single day.
+For a guessed ship capacity, I use a helper function count_days() to determine how many days are required to ship all packages.
+
+The helper function simulates the shipping process:
+
+Start with the full ship capacity for the current day.
+Traverse the packages in order.
+If the current package fits in the remaining capacity, load it onto the ship.
+Otherwise, start a new day, restore the ship's capacity, and try loading the same package again.
+At the end of the traversal, return the total number of days required.
+Using this helper:
+
+If the required days are greater than the allowed days, the guessed capacity is too small, so search in the higher half.
+Otherwise, the guessed capacity is valid. Store it as a possible answer and continue searching for a smaller valid capacity.
+This guarantees that we find the minimum ship capacity.
+
+Time Complexity
+count_days() scans the array once, taking O(n) time.
+Binary Search is performed over the range [max(weights), sum(weights)], which takes O(log(sum(weights) - max(weights))) iterations.
+Overall Time Complexity: O(n × log(sum(weights) - max(weights)))
+
+Space Complexity
+The algorithm uses only a few extra variables while simulating the shipping process.
+
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def shipWithinDays(self, weights: List[int], days: int) -> int:
+        def count_days(weight_capacity):
+            safety = weight_capacity
+            no_of_days = 1
+            i = 0
+            while i < len(weights):
+                if weights[i] <= weight_capacity:
+                    weight_capacity -= weights[i]
+                    i += 1
+                else:
+                    no_of_days += 1
+                    weight_capacity = safety
+            return no_of_days
+        low = max(weights)
+        high = sum(weights)
+        result = -1
+        while low <= high:
+            guessed_capacity = (low+high)//2
+            days_taken = count_days(guessed_capacity)
+            if days_taken > days:
+                low = guessed_capacity + 1
+            else:
+                result = guessed_capacity
+                high = guessed_capacity -1
+        return result
