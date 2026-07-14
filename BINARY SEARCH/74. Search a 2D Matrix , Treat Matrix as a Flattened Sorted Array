@@ -1,0 +1,40 @@
+ntuition
+Although the input is a 2D matrix, it satisfies two important properties:
+
+Each row is sorted.
+The first element of every row is greater than the last element of the previous row.
+
+Because of these properties, the entire matrix behaves like one sorted array.
+
+Instead of actually flattening the matrix, we can perform binary search on the virtual array of size m × n. For any index in this virtual array, we can convert it back to its corresponding row and column in the matrix.
+
+Approach
+Consider the matrix as a virtual sorted array containing m × n elements.
+Perform a standard binary search on indices from 0 to m × n - 1.
+For each middle index:
+Compute the corresponding row using mid // n.
+Compute the corresponding column using mid % n.
+Compare the element with the target.
+Return True if found; otherwise continue binary search.
+If the search ends, return False.
+
+Complexity
+Time Complexity: O(log(m × n))
+Space Complexity: O(1
+
+Code
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        m = len(matrix)
+        n = len(matrix[0])
+        low = 0
+        high = m * n - 1
+        while low <= high :
+            mid = (low+high)//2
+            if matrix[mid//n][mid%n] == target:
+                return True
+            elif matrix[mid//n][mid%n] < target:
+                low = mid+1
+            else:
+                high = mid-1
+        return False
