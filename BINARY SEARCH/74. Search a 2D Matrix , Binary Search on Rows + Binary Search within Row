@@ -1,0 +1,65 @@
+problem link https://leetcode.com/problems/search-a-2d-matrix/description/
+Intuition
+Since the first element of every row is greater than the last element of the previous row, the matrix can be viewed as a collection of sorted ranges.
+
+Instead of searching the entire matrix directly, I first determine which row could possibly contain the target. The correct row is the last row whose first element is less than or equal to the target.
+
+Once that row is identified, I perform a standard binary search within that row.
+
+Approach
+Perform a binary search on the rows using the first element of each row.
+If matrix[mid][0] <= target, this row is a possible candidate, but a later row may also satisfy the condition, so store the row index and continue searching to the right.
+Otherwise, search the left half.
+If no valid row is found, return False.
+Perform a standard binary search on the identified row.
+Return True if the target is found.
+Otherwise, return False.
+
+This approach efficiently narrows the search space using two binary searches.
+
+Algorithm
+Initialize low = 0 and high = number of rows - 1.
+Binary search to find the last row whose first element is less than or equal to the target.
+If no such row exists, return False.
+Binary search within the selected row.
+Return True if the target is found; otherwise return False.
+Complexity Analysis
+Time Complexity: O(log m + log n)
+O(log m) to identify the candidate row.
+O(log n) to search within that row.
+Space Complexity: O(1)
+Key Observation
+
+The important observation is that every row represents a sorted interval, and these intervals do not overlap because
+
+the rows are individually sorted, and
+the first element of each row is greater than the last element of the previous row.
+
+Therefore, the target can belong to at most one row, allowing us to first locate the correct row and then perform a binary search within it.
+
+Code
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        low = 0
+        high = len(matrix) - 1
+        resultant_row = None
+        while low <= high:
+            mid = (low+high)//2
+            if matrix[mid][0] <= target:
+                resultant_row = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+        if resultant_row == None:
+            return False
+        low = 0
+        high = len(matrix[resultant_row]) - 1
+        while low <= high:
+            mid = (low+high)//2
+            if matrix[resultant_row][mid] == target:
+                return True
+            elif matrix[resultant_row][mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return False
