@@ -1,0 +1,111 @@
+problem link : https://leetcode.com/problems/split-array-largest-sum/description/?envType=problem-list-v2&envId=d79iyml3
+Intuition
+The problem asks us to split the array into k non-empty subarrays such that the largest subarray sum is minimized.
+
+Instead of directly finding this value, we can guess the answer and check whether it is possible.
+
+First, we determine the search space:
+
+The minimum possible answer is max(nums) because every element must belong to some subarray. Therefore, the largest subarray sum can never be smaller than the largest element itself.
+The maximum possible answer is sum(nums) because if the entire array is considered as one subarray, its sum will be the largest subarray sum.
+Now, suppose someone tells us that the maximum allowed sum of any subarray is x.
+
+The question becomes:
+
+"Can I split the array into at most k subarrays such that no subarray has a sum greater than x?"
+
+If the answer is Yes, then x is a valid candidate, and we should try to minimize it further.
+
+If the answer is No, then x is too small, and we must increase it.
+
+This creates a monotonic property:
+
+Possible  Possible  Possible  Impossible  Impossible
+Since we are looking for the smallest valid value, Binary Search on Answer can be applied.
+
+Approach
+We binary search on the answer.
+
+For every guessed value mid, treat it as the maximum sum allowed for a single subarray.
+
+To verify whether this guess is possible:
+
+Start building the first subarray.
+Keep adding elements while the current subarray sum does not exceed mid.
+Whenever adding the next element would exceed mid, start a new subarray.
+Count the total number of subarrays formed.
+If the number of subarrays required is less than or equal to k, then the guessed value is feasible.
+
+Otherwise, we need more than k subarrays, meaning the guessed value is too small.
+
+Using this feasibility check, Binary Search finds the minimum possible largest subarray sum.
+
+Algorithm
+Set:
+
+low = max(nums)
+high = sum(nums)
+While low <= high:
+
+Compute mid.
+
+Check whether the array can be split into at most k subarrays with maximum subarray sum equal to mid.
+
+If possible:
+
+Store mid as the current answer.
+Search the left half for a smaller valid answer.
+Otherwise:
+
+Search the right half.
+Return the stored answer.
+
+Complexity Analysis
+Let n be the size of the array.
+
+Each feasibility check traverses the array once.
+O(n)
+Binary Search is performed over the range:
+[max(nums), sum(nums)]
+which requires:
+
+O(log(sum(nums)))
+iterations.
+
+Time Complexity
+
+O(n × log(sum(nums)))
+Space Complexity
+
+O(1)
+Code
+class Solution:
+    def splitArray(self, nums: List[int], k: int) -> int:
+        def helper(guessed):
+            sum_of_subarrays = guessed
+            remaining = sum_of_subarrays
+            subarrays = 1
+            i = 0
+            while i < len(nums):
+                if nums[i] <= remaining:
+                    remaining -= nums[i]
+                    i += 1
+                else:
+                    subarrays += 1
+                    remaining = sum_of_subarrays
+            if subarrays <= k:
+                return True
+            else:
+                return False
+        low = max(nums)
+        high = sum(nums)
+        result = 0
+        while low <= high:
+            mid = (low+high)//2
+            if helper(mid) == True:
+                result = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+        return result
+            
