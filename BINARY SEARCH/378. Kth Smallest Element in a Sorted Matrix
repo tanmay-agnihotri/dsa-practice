@@ -1,0 +1,54 @@
+problem link : https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/
+ntuition
+Instead of searching for the k-th smallest element directly, we binary search on the value of the answer.
+
+The smallest possible answer is the top-left element of the matrix, while the largest possible answer is the bottom-right element.
+
+For every guessed value mid, we count how many elements in the matrix are less than or equal to mid.
+
+If the count is at least k, then mid could be the answer, but there might exist a smaller valid value, so we search the left half.
+Otherwise, the answer must be larger, so we search the right half.
+
+The key challenge is counting efficiently.
+
+Since every row and every column is sorted, we can start from the bottom-left corner.
+
+If the current element is <= mid, then every element above it in the same column is also <= mid, so we can count the entire column up to the current row and move one column to the right.
+Otherwise, we move one row upward to find smaller values.
+
+Each row and column is visited at most once, making the counting process linear.
+
+Complexity
+Counting elements: O(n)
+Binary search: O(log(maxValue − minValue))
+
+Time Complexity: O(n log(maxValue - minValue))
+
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
+        m = n = len(matrix)
+        def helper(guessed):
+            count = 0
+            row = m - 1
+            col = 0
+            while row >= 0 and col < n:
+                if matrix[row][col] > guessed:
+                    row -= 1
+                else:
+                    count += row + 1
+                    col += 1
+            return count >= k
+        low = matrix[0][0]
+        high = matrix[m-1][n-1]
+        result = None
+        while low <= high:
+            mid = (low+high)//2
+            if helper(mid) :
+                result = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+        return result
