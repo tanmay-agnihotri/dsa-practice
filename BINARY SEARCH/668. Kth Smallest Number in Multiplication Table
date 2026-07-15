@@ -1,0 +1,60 @@
+problem link : https://leetcode.com/problems/kth-smallest-number-in-multiplication-table/description/
+Intuition
+Rather than generating the entire multiplication table, we binary search on the answer.
+
+The smallest possible number is 1, while the largest possible number is m × n.
+
+For each guessed value mid, we count how many numbers in the multiplication table are less than or equal to mid.
+
+If at least k numbers are <= mid, then mid could be the answer, but there may be a smaller valid value, so we continue searching the left half.
+Otherwise, the answer must be larger.
+
+The multiplication table has an important property:
+
+Every row is sorted in increasing order.
+Every column is sorted in increasing order.
+
+This allows us to use the same staircase traversal used in LC 378.
+
+Starting from the bottom-left corner:
+
+If the current value is <= mid, then every value above it in the same column is also <= mid, so we count all those elements and move one column to the right.
+Otherwise, we move one row upward.
+
+Each row and column is processed at most once.
+
+Complexity
+The staircase traversal visits each row and column at most once.
+
+Counting: O(m + n)
+Binary search: O(log(m × n))
+
+Time Complexity: O((m + n) log(m × n))
+
+Space Complexity: O(1)
+
+Code
+class Solution:
+    def findKthNumber(self, m: int, n: int, k: int) -> int:
+        def helper(guessed):
+            row = m
+            col = 1
+            count = 0
+            while row >= 1 and col < n+1:
+                if row * col <= guessed:
+                    count += row
+                    col += 1
+                else:
+                    row -= 1
+            return count >= k
+        low = 1
+        high = m * n
+        result = None
+        while low <= high :
+            mid = (low+high)//2
+            if helper(mid):
+                result = mid
+                high = mid -1
+            else:
+                low = mid + 1
+        return result
