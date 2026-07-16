@@ -1,0 +1,112 @@
+problem linkk : https://leetcode.com/problems/median-of-two-sorted-arrays/description/?envType=problem-list-v2&envId=d79iyml3
+Approach: Binary Search on the Partition
+Intuition
+Instead of actually merging the two sorted arrays, we imagine that they have already been merged into one sorted array.
+
+Our goal is to find the correct partition such that:
+
+The left half contains exactly half of the total elements (one extra element if the total length is odd).
+Every element on the left is less than or equal to every element on the right.
+If we can find such a partition, then:
+
+For an odd total length, the median is simply the largest element on the left.
+For an even total length, the median is the average of the largest element on the left and the smallest element on the right.
+Key Observation
+Suppose we choose a partition in nums1.
+
+Then the partition in nums2 is automatically determined because the total number of elements on the left side is fixed.
+
+partition2 = leftHalf - partition1
+where
+
+leftHalf = (n1 + n2 + 1) // 2
+This reduces the problem to searching for only one partition.
+
+Why Binary Search?
+We binary search only on the smaller array.
+
+For every partition:
+
+l1 = largest element on the left side of nums1
+r1 = smallest element on the right side of nums1
+l2 = largest element on the left side of nums2
+r2 = smallest element on the right side of nums2
+The partition is valid if:
+
+l1 <= r2
+and
+l2 <= r1
+If:
+
+l1 > r2
+then we have taken too many elements from nums1, so we move the partition to the left.
+
+If:
+
+l2 > r1
+then we have taken too few elements from nums1, so we move the partition to the right.
+
+Since each step halves the search space, binary search efficiently finds the correct partition.
+
+Boundary Handling
+The partition can lie before the first element or after the last element of an array.
+
+To handle these edge cases uniformly:
+
+If there is no element on the left, we treat it as -∞.
+If there is no element on the right, we treat it as +∞.
+This avoids writing separate logic for boundary cases while keeping the partition conditions unchanged.
+
+Complexity Analysis
+Time Complexity: O(log(min(n, m)))
+
+Binary search is performed only on the smaller array.
+Space Complexity: O(1)
+
+Only a few variables are used.
+Code
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        n1 = len(nums1)
+        n2 = len(nums2)
+        if n1 >n2:
+            return self.findMedianSortedArrays(nums2,nums1)
+        low = 0 
+        high = n1
+        left_half = (n1+n2+1)//2
+        n = n1+n2
+
+        while low <= high:
+            partition1 = (low+high)//2
+            partition2 = left_half - partition1
+
+            if partition1 == 0:
+                l1 = float('-inf')
+            else:
+                l1 = nums1[partition1-1]
+            
+            if partition1 == n1:
+                r1 = float('inf')
+            else:
+                r1 = nums1[partition1]
+            
+            if partition2 == 0:
+                l2 = float('-inf')
+            else:
+                l2 = nums2[partition2-1]
+            
+            if partition2 == n2:
+                r2 = float('inf')
+            else:
+                r2 = nums2[partition2]
+            
+            if l1 <= r2 and l2 <= r1:
+                if n % 2 == 1:
+                    return max(l1,l2)
+                else:
+                    return (max(l1,l2) + min(r1,r2))/2
+            
+            elif l1 > r2:
+                high = partition1 - 1
+            else:
+                low = partition1 + 1
