@@ -1,0 +1,138 @@
+problem link : https://leetcode.com/problems/top-k-frequent-elements/description/
+# Intuition
+
+The problem asks us to find the `k` elements that appear most frequently in the array.
+
+First, we need to know the frequency of each element, so we use a hash map to store:
+
+```
+element -> frequency
+```
+
+After creating the frequency map, the problem becomes:
+
+> Find the top `k` elements based on their frequency.
+
+Instead of sorting all elements by frequency, we can maintain only the best `k` candidates using a min heap.
+
+The heap stores pairs:
+
+```
+(frequency, element)
+```
+
+Since it is a min heap, the element with the smallest frequency stays at the root.
+
+This is useful because:
+
+* If the heap contains more than `k` elements, the least frequent element is the weakest candidate.
+* We can remove it and keep only the `k` most frequent elements.
+
+---
+
+# Approach
+
+1. Build a frequency map using a hash map.
+2. Create an empty min heap.
+3. Iterate through the frequency map:
+
+   * Add `(frequency, element)` into the heap.
+   * If the heap size becomes greater than `k`, remove the element with the smallest frequency.
+4. The heap now contains the `k` most frequent elements.
+5. Extract only the elements from the heap and return them.
+
+---
+
+# Why does this work?
+
+The invariant maintained is:
+
+> The heap always contains the `k` most frequent elements processed so far.
+
+When a new element is added:
+
+* If the heap size is less than or equal to `k`, it is kept as a candidate.
+* If the heap size becomes greater than `k`, we remove the smallest frequency element.
+
+Since the heap always removes the weakest candidate, after processing all elements, the remaining elements are exactly the `k` most frequent ones.
+
+---
+
+# Complexity Analysis
+
+Let `n` be the number of elements in `nums` and `m` be the number of unique elements.
+
+### Time Complexity:
+
+Creating the frequency map:
+
+```
+O(n)
+```
+
+Processing all unique elements using a heap of size `k`:
+
+```
+O(m log k)
+```
+
+Total:
+
+```
+O(n + m log k)
+```
+
+Since `m <= n`:
+
+```
+O(n log k)
+```
+
+### Space Complexity:
+
+Frequency map stores `m` unique elements:
+
+```
+O(m)
+```
+
+Heap stores at most `k` elements:
+
+```
+O(k)
+```
+
+Total:
+
+```
+O(m + k)
+```
+
+---
+
+# Code
+
+```python
+import heapq
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+
+        freq = {}
+
+        # Count frequencies
+        for num in nums:
+            freq[num] = freq.get(num, 0) + 1
+
+        heap = []
+
+        # Maintain k most frequent elements
+        for element, frequency in freq.items():
+            heapq.heappush(heap, (frequency, element))
+
+            if len(heap) > k:
+                heapq.heappop(heap)
+
+        # Extract elements from heap
+        return [element for frequency, element in heap]
+```
