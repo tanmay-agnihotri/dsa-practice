@@ -1,0 +1,79 @@
+problem link : https://leetcode.com/problems/k-closest-points-to-origin/description/
+# Intuition
+
+We need to find the `k` points closest to the origin.
+
+A simple approach would be to calculate the distance of every point and sort all points, but that would take `O(n log n)` time.
+
+Instead, we can use a heap.
+
+Since we only need the `k` closest points, we maintain a **max heap of size k**:
+
+* The heap stores the current `k` closest points.
+* The point with the largest distance among them stays at the top.
+* If we find a new point that is closer, we remove the farthest point from the heap.
+
+This way, we never store more than `k` points.
+
+---
+
+# Algorithm
+
+1. Create an empty heap.
+2. Traverse through every point:
+
+   * Calculate its squared distance from the origin:
+
+     ```
+     distance = x² + y²
+     ```
+
+     We use squared distance because square root does not affect the comparison order.
+   * Push `(-distance, index)` into the heap.
+
+     * Negative distance is used because Python's `heapq` is a min heap, and we want a max heap.
+   * If the heap size becomes greater than `k`, remove the top element (the farthest point).
+3. After processing all points, the heap contains the indices of the `k` closest points.
+4. Use these indices to build the result.
+
+---
+
+# Complexity Analysis
+
+Let `n` be the number of points.
+
+**Time Complexity:**
+`O(n log k)`
+
+* We perform a heap insertion for every point.
+* The heap size is limited to `k`.
+
+**Space Complexity:**
+`O(k)`
+
+* The heap stores at most `k` points.
+* The result list is not counted as extra space.
+
+---
+
+# Code
+
+```python
+import heapq
+
+class Solution:
+    def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+        heap = []
+
+        for i, (x, y) in enumerate(points):
+            distance = x*x + y*y
+
+            # max heap using negative distance
+            heapq.heappush(heap, (-distance, i))
+
+            # remove the farthest point
+            if len(heap) > k:
+                heapq.heappop(heap)
+
+        return [points[i] for distance, i in heap]
+```
