@@ -1,0 +1,77 @@
+problem link : https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+# Intuition
+
+The problem asks for the **kth largest element** in an unsorted array.
+
+Instead of sorting the entire array, we can maintain only the **k largest elements** seen so far.
+
+If we keep these `k` elements in a **min heap**, the smallest element among them will always be at the root.
+
+Why do we need the smallest element?
+
+Because when a new number arrives:
+
+* If it is smaller than or equal to the heap root, it cannot be part of the top `k` largest elements.
+* If it is larger than the heap root, it should enter the top `k`, and the current smallest element should be removed.
+
+After processing all elements, the heap contains the `k` largest elements, and the root is the smallest among them, which is exactly the **kth largest element**.
+
+---
+
+# Approach
+
+1. Create an empty min heap.
+2. Insert the first `k` elements into the heap.
+3. Traverse the remaining elements:
+
+   * If the current element is greater than the smallest element in the heap (`heap[0]`), replace the heap root with the current element.
+4. Return the root of the heap.
+
+---
+
+# Why does this work?
+
+The invariant maintained throughout the algorithm is:
+
+> The heap always contains the `k` largest elements encountered so far.
+
+When a new larger element appears, it replaces the smallest element among the current top `k`. Therefore, after processing the entire array, the heap contains the overall `k` largest elements.
+
+The smallest element inside these `k` elements is the kth largest element in the complete array.
+
+---
+
+# Complexity Analysis
+
+Let `n` be the length of the array.
+
+* Building the heap with `k` elements takes `O(k log k)`.
+* Each remaining element may cause a heap update in `O(log k)` time.
+
+Therefore:
+
+**Time Complexity:** `O(n log k)`
+
+**Space Complexity:** `O(k)`
+
+---
+
+# Code
+
+```python
+import heapq
+
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        heap = []
+
+        # Maintain k largest elements using a min heap
+        for i in range(k):
+            heapq.heappush(heap, nums[i])
+
+        for i in range(k, len(nums)):
+            if nums[i] > heap[0]:
+                heapq.heappushpop(heap, nums[i])
+
+        return heap[0]
+```
