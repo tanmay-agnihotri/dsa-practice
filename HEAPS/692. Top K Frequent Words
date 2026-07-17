@@ -1,0 +1,117 @@
+problem link : https://leetcode.com/problems/top-k-frequent-words/description/
+Approach
+
+We need to find the k most frequent words. If two words have the same frequency, the word that comes earlier alphabetically should come first.
+
+Step 1: Count frequencies
+
+Use a hashmap (Counter) to store the frequency of every word.
+
+Example:
+
+words = ["i","love","leetcode","i","love","coding"]
+
+count = {
+"i":2,
+"love":2,
+"leetcode":1,
+"coding":1
+}
+Step 2: Maintain top k words using a min heap
+
+A heap is useful because we only need to keep k best candidates.
+
+For each word:
+
+Push (frequency, word) into the heap.
+If heap size becomes greater than k, remove the smallest element.
+
+The smallest element in the heap should be the least desirable word.
+
+The priority rules are:
+
+Lower frequency is worse.
+If frequencies are equal, lexicographically larger word is worse.
+
+To achieve this, we create a custom Word class and override lt.
+
+class Word:
+def init(self, word):
+self.word = word
+
+def __lt__(self, other):
+    return self.word > other.word
+The reversed comparison ensures that when frequencies are equal, alphabetically larger words are removed first.
+
+Step 3: Sort the final result
+
+The heap only helps us select the top k words. It does not guarantee the final order.
+
+So after extracting the words, sort them using:
+
+result.sort(key=lambda x: (-count[x], x))
+
+This sorts by:
+
+Higher frequency first (-count[x])
+Alphabetical order if frequencies are equal (x)
+Complexity Analysis
+
+Let:
+
+n = number of words
+m = number of unique words
+Frequency counting
+
+Time:
+
+O(n)
+
+because we visit every word once.
+
+Heap operations
+
+For every unique word:
+
+O(log k)
+
+Total:
+
+O(m log k)
+Sorting result
+
+We sort only k words:
+
+O(k log k)
+Overall:
+
+Time Complexity:
+
+O(n + m log k + k log k)
+
+Space Complexity:
+
+O(m + k)
+
+for the frequency map and heap.
+
+Code
+import heapq
+class Word:
+    def __init__(self,word):
+        self.word = word
+    def __lt__(self,other):
+        return self.word > other.word
+class Solution:
+    def topKFrequent(self, words: List[str], k: int) -> List[str]:
+        freq = {}
+        for word in words:
+            freq[word] = freq.get(word,0) + 1
+        heap = []
+        for word,frequency in freq.items():
+            heapq.heappush(heap ,(frequency ,Word(word)))
+            if len(heap) > k:
+                heapq.heappop(heap)
+        result = [word.word for frequency , word in heap]
+        result.sort(key=lambda x:(-freq[x],x))
+        return result
