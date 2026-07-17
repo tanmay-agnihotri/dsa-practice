@@ -1,0 +1,56 @@
+problem link : https://leetcode.com/problems/find-k-closest-elements/solutions/8403928/658-find-k-closest-elements-by-tanmay_ag-ccij/
+Intuition
+
+The problem asks us to find the k elements closest to x. The closeness of an element is determined by its absolute difference from x.
+
+For every element in the array, I calculate:
+
+abs(element - x)
+
+Since I only need the best k candidates, I maintain a max heap of size k. Python only provides a min heap, so I simulate a max heap by storing negative values.
+
+The heap stores:
+
+(-difference, -element)
+
+This ordering follows the problem's comparison rules:
+
+Elements with a larger difference are considered worse and should be removed first.
+If two elements have the same difference, the larger element is considered worse, because the problem prefers the smaller element.
+
+Whenever the heap size exceeds k, I remove the top element, ensuring that only the k closest elements remain.
+
+Finally, since elements are removed from the heap in arbitrary heap order, I sort the remaining elements before returning the answer.
+
+Algorithm
+Initialize an empty heap.
+Iterate through every element in the array.
+Compute its absolute difference from x.
+Push (-difference, -element) into the heap.
+If the heap size becomes greater than k, pop the top element.
+Extract the remaining elements from the heap.
+Sort the extracted elements in ascending order.
+Return the sorted list.
+Complexity Analysis
+Time Complexity: O(n log k + k log k)
+Each of the n elements is inserted into the heap in O(log k) time.
+The final sorting of k elements takes O(k log k).
+Space Complexity: O(k)
+The heap stores at most k elements.
+
+Code
+import heapq
+class Solution:
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        heap = []
+        for element in arr:
+            diff = abs(element-x)
+            heapq.heappush(heap, (-diff ,-element))
+            if len(heap) > k:
+                heapq.heappop(heap)
+        result = []
+        while heap:
+            diff , element = heapq.heappop(heap)
+            result.append(-element)
+        result.sort()
+        return result
