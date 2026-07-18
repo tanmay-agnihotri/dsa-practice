@@ -1,0 +1,87 @@
+problem link : https://leetcode.com/problems/the-k-weakest-rows-in-a-matrix/description/
+Intuition
+Each row's weakness depends on the number of soldiers it contains. Since every row is sorted with all soldiers (1) before civilians (0), we can efficiently find the number of civilians by locating the first occurrence of 0 using binary search.
+
+A row with more civilians has fewer soldiers, making it weaker.
+
+After calculating the weakness of each row, we need to return the k weakest rows. Instead of sorting all rows, we can maintain a heap of size k.
+
+The heap stores the current weakest candidates. Whenever the heap size exceeds k, we remove the strongest row among them. This ensures that after processing all rows, the heap contains exactly the k weakest rows.
+
+Algorithm
+For each row:
+Use binary search to find the first index containing 0.
+
+The number of civilians is:
+
+len(row) - first_zero_index
+Store (civilians, row_index) in the heap.
+Maintain the heap size:
+If the heap contains more than k rows, remove the strongest row.
+For rows with equal weakness, the row with the larger index is considered stronger, so it should be removed first.
+Extract all row indices from the heap.
+Reverse the result because the heap gives rows from strongest to weakest.
+Why Binary Search?
+
+The rows are sorted:
+
+[1,1,1,1,0,0,0]
+
+The transition point between soldiers and civilians is fixed.
+
+Instead of counting zeros linearly, we find the first 0:
+
+index: 0 1 2 3 4 5 6
+row: 1 1 1 1 0 0 0
+^
+first zero
+
+The index of the first zero tells us the number of soldiers, and:
+
+civilians = total length - first zero index
+Complexity Analysis
+
+Let:
+
+n = number of rows
+m = number of columns in each row
+
+For every row:
+
+Binary search takes O(log m)
+Heap operation takes O(log k)
+
+Therefore:
+
+Time Complexity:
+
+O(n log m + n log k)
+
+Space Complexity:
+
+O(k)
+
+because the heap stores at most k rows.
+
+Code
+import heapq
+class Solution:
+    def kWeakestRows(self, mat: List[List[int]], k: int) -> List[int]:
+        def weakest(row):
+            zero_count = 0
+            for i in range(len(row)-1,-1,-1):
+                if row[i] == 0:
+                    zero_count += 1
+                else:
+                    break
+            return zero_count
+        heap = []
+        for i ,rows in enumerate(mat):
+            heapq.heappush(heap, (weakest(rows), -i))
+            if len(heap) > k:
+                heapq.heappop(heap)
+        result = []
+        while heap:
+            zero_count , index = heapq.heappop(heap)
+            result.append(-index)
+        return result[::-1]
