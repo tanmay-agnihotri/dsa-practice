@@ -1,0 +1,116 @@
+problem link : https://leetcode.com/problems/ipo/description/
+Approach: Greedy + Sorting + Max Heap
+Intuition
+
+To maximize our final capital, we should always choose the most profitable project among all the projects that we can currently afford.
+
+However, not every project is immediately available since each project has a minimum capital requirement. As our capital increases after completing projects, more projects become accessible.
+
+To efficiently handle this, we use two observations:
+
+Sort all projects by their capital requirement so we can quickly discover newly affordable projects.
+Among all currently affordable projects, always choose the one with the maximum profit, which is efficiently done using a max heap.
+Why Sort the Projects?
+
+Each project has:
+
+Capital required
+Profit earned
+
+We first combine them into pairs:
+
+(capital_required, profit)
+
+and sort them based on the required capital.
+
+For example,
+
+Capital : [0, 1, 2]
+Profit : [1, 2, 3]
+
+becomes
+
+[(0,1), (1,2), (2,3)]
+
+Since the projects are sorted, we can maintain a pointer idx that only moves forward.
+
+Whenever our current capital increases, we simply keep adding all newly affordable projects to the heap without revisiting previous ones.
+
+Why Max Heap?
+
+At any point, several projects may be affordable.
+
+Example:
+
+Current Capital = 3
+
+Available Projects:
+
+Profit = 4
+Profit = 7
+Profit = 2
+
+To maximize our future capital, the greedy choice is to always complete the project with the highest profit.
+
+A max heap allows us to retrieve this project in O(log n) time.
+
+Since Python only provides a min heap, we store profits as negative values.
+
+Algorithm
+Pair every project's capital requirement with its profit.
+Sort the projects based on required capital.
+Initialize:
+A max heap to store profits of affordable projects.
+A pointer idx to traverse the sorted project list.
+profit as the current available capital.
+Repeat at most k times:
+Add every project whose required capital is less than or equal to the current capital into the max heap.
+If no project is available, return the current capital since no further projects can be completed.
+Otherwise, select the project with the highest profit from the heap and add its profit to the current capital.
+Return the final capital.
+
+Complexity Analysis
+Let:
+
+n = number of projects
+Time Complexity
+Creating project pairs: O(n)
+Sorting projects: O(n log n)
+Each project is inserted into the heap at most once: O(n log n)
+We perform at most k heap removals: O(k log n)
+
+Overall:
+
+O(n log n + k log n)
+Space Complexity
+Project pairs: O(n)
+Max heap: O(n)
+
+Overall:
+
+O(n)
+
+Code
+import heapq
+class Solution:
+    def findMaximizedCapital(self, k: int, w: int, profits: List[int], capital: List[int]) -> int:
+        pairs = []
+        for i in range(len(capital)):
+            pairs.append([capital[i],profits[i]])
+        pairs.sort()
+        idx = 0
+        heap = []
+        profit = w
+        
+        for _ in range(k):
+            while idx < len(pairs):
+                if pairs[idx][0] <= profit:
+                    heapq.heappush(heap,-pairs[idx][1])
+                    idx += 1
+                else:
+                    break
+            if not heap:
+                return profit
+            else:
+                profit += -heapq.heappop(heap)
+        return profit
