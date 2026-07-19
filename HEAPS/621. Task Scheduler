@@ -1,0 +1,117 @@
+problem link : https://leetcode.com/problems/task-scheduler/description/
+Intuition
+The task with the highest remaining frequency is the most restrictive because it has the greatest chance of creating idle time in the future. Therefore, whenever multiple tasks are available, we should always execute the task with the highest remaining frequency.
+
+However, after executing a task, it cannot be executed again until its cooldown period of n intervals has passed. Instead of keeping it in the heap where it could be selected again immediately, we temporarily move it to a cooldown queue. Once its cooldown expires, we push it back into the heap so it becomes available for execution again.
+
+This way:
+
+The max heap stores all tasks that are currently available.
+The queue stores tasks that are cooling down and records the exact time when they become available again.
+
+Approach
+Count the frequency of every task.
+Build a max heap using negative frequencies (Python provides only a min heap).
+
+Maintain a queue storing:
+
+(available_time, remaining_frequency, task)
+Simulate the CPU one unit of time at a time:
+First, move every task whose cooldown has expired back into the heap.
+If the heap is not empty:
+Execute the task with the highest remaining frequency.
+Decrease its remaining frequency.
+
+If it still has occurrences left, place it into the cooldown queue with:
+
+available_time = current_time + n + 1
+Increment the current time.
+Continue until both the heap and cooldown queue become empty.
+
+Why Max Heap?
+
+At every interval, multiple tasks may be available for execution. Choosing the task with the highest remaining frequency first is a greedy choice because delaying the most frequent task increases the likelihood of creating idle slots later.
+
+For example,
+
+Tasks = [A, A, A, B, B, C]
+
+Current frequencies:
+
+A → 3
+B → 2
+C → 1
+
+The best task to execute first is A, since it appears the most and is the hardest to schedule without violating the cooldown constraint.
+
+A max heap allows us to retrieve this task efficiently in O(log k) time, where k is the number of distinct tasks.
+
+Why a Queue?
+
+Once a task is executed, it cannot be scheduled again until its cooldown finishes.
+
+Instead of keeping it inside the heap, we move it into a cooldown queue along with the time when it becomes available again.
+
+For example, if:
+
+Current Time = 5
+Cooldown = 2
+
+and task A is executed at time 5, then it can only be executed again at:
+
+5 + 2 + 1 = 8
+
+So we store:
+
+(8, remaining_frequency, 'A')
+
+The queue naturally stores tasks in increasing order of their availability time, allowing us to efficiently move them back into the heap when their cooldown expires.
+
+Complexity
+n = total number of tasks
+k = number of distinct tasks
+
+Time Complexity:
+
+Building the frequency map: O(n)
+Building the heap: O(k)
+Each task is inserted into and removed from the heap at most once per execution:
+O(n log k)
+
+Overall:
+
+O(n log k)
+
+Space Complexity:
+
+Frequency map: O(k)
+Max heap: O(k)
+Cooldown queue: O(k)
+
+Overall:
+
+O(k)
+
+Code
+import heapq
+from collections import deque
+class Solution:
+    def leastInterval(self, tasks: List[str], n: int) -> int:
+        task_freq = {}
+        for task in tasks:
+            task_freq[task] = task_freq.get(task,0) + 1
+        heap = [(-freq,task) for task , freq in task_freq.items()]
+        heapq.heapify(heap)
+        queue = deque()
+        time = 0
+        while heap or queue:
+            if queue and queue[0][0] == time:
+                available_time , frequency , task = queue.popleft()
+                heapq.heappush(heap,(frequency,task))
+            if heap:
+                frequency , task = heapq.heappop(heap)
+                frequency += 1
+                if frequency != 0:
+                    queue.append((time + n +1 , frequency,task))
+            time += 1
+        return time
