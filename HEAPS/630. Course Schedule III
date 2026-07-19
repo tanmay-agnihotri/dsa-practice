@@ -1,0 +1,99 @@
+problem link : https://leetcode.com/problems/course-schedule-iii/description/
+Approach: Greedy + Sorting + Max Heap
+Intuition
+
+The goal is to complete the maximum number of courses while making sure that every selected course is finished before its deadline.
+
+A course with an earlier deadline is more urgent, so we should consider courses in increasing order of their deadlines.
+
+However, while selecting courses, we may reach a point where the total time exceeds the current course's deadline. At that point, our current selection is invalid, and we need to remove one course.
+
+Since removing any course decreases our count by exactly one, we should remove the course that gives us the maximum amount of time back. Therefore, we remove the course with the largest duration.
+
+To efficiently find the longest course among all selected courses, we maintain a max heap.
+
+Algorithm
+Sort all courses by their deadline.
+Maintain:
+max_time → total duration of all currently selected courses.
+A max heap storing durations of selected courses.
+Iterate through each course:
+Add the course duration to max_time.
+Push the duration into the heap.
+If max_time exceeds the current course's deadline:
+Remove the course with the largest duration from the heap.
+Subtract its duration from max_time.
+The number of courses remaining in the heap represents the maximum number of courses that can be completed.
+
+Why Sort by Deadline?
+
+Consider two courses:
+
+Course A: deadline = 5
+Course B: deadline = 10
+
+If we delay Course A, we may lose the opportunity to complete it because it has a smaller time window.
+
+By processing courses with earlier deadlines first, we make sure the most restrictive courses get considered before courses with more flexibility.
+
+Why Max Heap?
+
+The heap stores the durations of all courses that are currently selected.
+
+Example:
+
+Selected courses:
+
+Duration:
+5
+2
+3
+
+If the total time exceeds a deadline, we need to remove one course.
+
+Removing:
+
+5
+
+gives back the maximum possible time while sacrificing only one course.
+
+Therefore, we store durations in a max heap so we can remove the longest course efficiently.
+
+Python provides only a min heap, so we store negative durations.
+
+Complexity Analysis
+Let n be the number of courses.
+
+Time Complexity:
+
+Sorting courses:
+
+O(n log n)
+
+Each course is pushed into and popped from the heap at most once:
+
+O(n log n)
+
+Overall:
+
+O(n log n)
+Space Complexity:
+
+The heap stores at most all courses:
+
+O(n)
+
+Code
+import heapq
+class Solution:
+    def scheduleCourse(self, courses: List[List[int]]) -> int:
+        courses.sort(key = lambda x : x[1])
+        heap = []
+        max_time = 0
+        for duration, last_day in courses:
+            heapq.heappush(heap,-duration)
+            max_time += duration
+            if max_time > last_day:
+                biggest_course = heapq.heappop(heap)
+                max_time += biggest_course
+        return len(heap)
