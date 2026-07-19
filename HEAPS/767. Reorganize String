@@ -1,0 +1,133 @@
+problem link : https://leetcode.com/problems/reorganize-string/description/
+Intuition
+The main challenge in this problem is that we cannot place the same character next to itself.
+
+For example:
+
+aaabb
+
+If we randomly start placing characters:
+
+b a b a ?
+
+we get stuck because one a is left at the end.
+
+The reason is that the character with the highest frequency has the highest chance of causing adjacent duplicates. Therefore, we should always try to place the character with the largest remaining frequency first.
+
+To efficiently get the character with the highest frequency, we use a max heap.
+
+Why Max Heap?
+
+At every step, we need the character that appears the most number of times.
+
+Example:
+
+s = "aaabbc"
+
+Frequency:
+a -> 3
+b -> 2
+c -> 1
+
+The best choice is always:
+
+a
+
+because delaying the most frequent character can make it impossible to arrange later.
+
+A max heap allows us to:
+
+Get the character with maximum remaining frequency in O(log n).
+Update its frequency after using it.
+
+Since Python provides only a min heap, we store frequencies as negative values:
+
+(-3, 'a')
+(-2, 'b')
+(-1, 'c')
+
+The smallest value becomes the largest frequency.
+
+Algorithm
+Count the frequency of every character.
+Build a max heap containing:
+(-frequency, character)
+Repeatedly:
+Remove the character with the highest frequency.
+If it is different from the previous placed character:
+Add it to the result.
+Reduce its frequency.
+Push it back into the heap if more occurrences remain.
+Otherwise:
+The current highest frequency character cannot be used.
+Remove the second most frequent character.
+Place that character instead.
+Push both characters back with updated frequencies.
+If at any point we need another character but the heap is empty, the arrangement is impossible, so return "".
+
+Complexity Analysis
+
+Let n be the length of the string and k be the number of unique characters.
+
+Time Complexity
+
+Building the frequency map:
+
+O(n)
+
+Each heap operation takes:
+
+O(log k)
+
+We perform operations for every character:
+
+O(n log k)
+Space Complexity
+
+Frequency map:
+
+O(k)
+
+Heap:
+
+O(k)
+
+Result array:
+
+O(n)
+
+Overall:
+
+O(n + k)
+
+(space dominated by storing the result)
+
+Code
+import heapq
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        freq = {}
+        for ch in s:
+            freq[ch] = freq.get(ch,0) + 1
+        heap = [(-count,ch) for ch , count in freq.items()]
+        heapq.heapify(heap)
+        result = []
+        while heap:
+            frequency , ch = heapq.heappop(heap)
+            if len(result) == 0 or ch != result[-1]:
+                result.append(ch)
+                frequency += 1
+                if frequency != 0:
+                    heapq.heappush(heap,(frequency,ch))
+            else:
+                if len(heap) == 0:
+                    return ""
+                else:
+                    freq_2nd , char = heapq.heappop(heap)
+                    result.append(char)
+                    freq_2nd += 1
+                    if freq_2nd != 0:
+                        heapq.heappush(heap ,(freq_2nd,char))
+                    if frequency != 0:
+                        heapq.heappush(heap,(frequency,ch))
+        return "".join(result) 
