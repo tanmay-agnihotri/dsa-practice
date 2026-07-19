@@ -1,0 +1,57 @@
+problem link: https://leetcode.com/problems/last-stone-weight/solutions/8406717/1046-last-stone-weight-by-tanmay_agnihot-rm2j/
+Intuition
+At every step, we need to select the two heaviest stones and smash them together.
+
+Finding the maximum two elements repeatedly in an array would be inefficient because after every operation the array changes.
+
+A max heap is the perfect data structure for this because it allows us to:
+
+Retrieve the largest element in O(log n)
+Remove the largest element in O(log n)
+Insert a new stone in O(log n)
+
+Since Python's heapq provides a min heap, we store the negative values of stones to simulate a max heap.
+
+Approach
+Convert every stone value into its negative and build a heap.
+The smallest negative value represents the largest stone.
+While there are at least two stones:
+Remove the two largest stones from the heap.
+If they are different:
+Insert their difference back into the heap.
+If they are equal:
+Both stones are destroyed, so nothing is added.
+After all operations:
+If one stone remains, return its value.
+Otherwise, return 0.
+
+Complexity
+Let n be the number of stones.
+
+Building the heap: O(n)
+Each smash operation performs at most:
+Two removals
+One insertion
+
+Each heap operation takes O(log n) time.
+
+Since each operation removes at least one stone, there are at most n operations.
+
+Time Complexity: O(n log n)
+Space Complexity: O(n)
+
+Code
+import heapq
+class Solution:
+    def lastStoneWeight(self, stones: List[int]) -> int:
+        heap = [-stone for stone in stones]
+        heapq.heapify(heap)
+        while len(heap) > 1:
+            stone1 = -heapq.heappop(heap)
+            stone2 = -heapq.heappop(heap)
+            if stone1 != stone2:
+                heapq.heappush(heap, -(stone1-stone2))
+        if len(heap) == 1:
+            return -heap[-1]
+        else:
+            return 0
