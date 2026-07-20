@@ -1,0 +1,81 @@
+problem link : https://leetcode.com/problems/merge-k-sorted-lists/description/
+Approach: Min Heap (Priority Queue)
+Intuition
+
+Each linked list is already sorted, so the smallest element among all lists must always be one of the current heads of the linked lists.
+
+Instead of comparing all nodes repeatedly, we use a min heap to keep track of the smallest available node from each list.
+
+Whenever we remove the smallest node:
+
+Add it to the result linked list.
+Move to the next node in that same linked list.
+Add that next node to the heap.
+
+This ensures that we always choose the smallest available node.
+
+Algorithm
+Create a dummy node to build the resulting linked list.
+Maintain a pointer prev which represents the last node in the merged list.
+Initialize a min heap:
+Insert the head node of every non-empty linked list.
+Store (node value, list index, node):
+node value decides the priority.
+list index acts as a tie breaker when two nodes have the same value, because Python cannot compare ListNode objects directly.
+While the heap is not empty:
+Remove the smallest node from the heap.
+Attach it to the result list.
+Move prev forward.
+If the removed node has a next node, insert that next node into the heap.
+Return dummy.next, which is the head of the merged linked list.
+
+Complexity
+Let:
+
+k = number of linked lists
+N = total number of nodes across all lists
+Time Complexity:
+
+Each node is inserted into and removed from the heap exactly once.
+
+Each heap operation costs:
+
+O(logk)
+
+Therefore:
+
+O(Nlogk)
+​
+
+Space Complexity:
+
+The heap contains at most one node from each linked list:
+
+O(k)
+​
+
+The dummy node and pointers require constant extra space.
+
+Code
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+import heapq
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        dummy = ListNode(0)
+        prev = dummy
+        heap = []
+        n = len(lists)
+        for i in range(n):
+            if lists[i]:
+                heapq.heappush(heap,(lists[i].val,i,lists[i]))
+        while heap:
+            val , index, node = heapq.heappop(heap)
+            prev.next = node
+            prev = prev.next
+            if node.next:
+                heapq.heappush(heap,(node.next.val,index,node.next))
+        return dummy.next
