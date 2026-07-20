@@ -1,0 +1,76 @@
+problem link:https://leetcode.com/problems/minimum-number-of-refueling-stops/description/
+Intuition
+While travelling towards the target, we can only refuel at stations that we have already passed.
+
+Instead of deciding immediately whether to take fuel from a station, we store the fuel available at every station we cross in a max heap.
+
+When we run out of fuel and cannot reach the next station, we choose the station with the maximum fuel among all previously visited stations. This is optimal because taking the largest available fuel allows us to travel the farthest and minimizes the number of stops.
+
+Approach
+Add the target as a dummy station with 0 fuel.
+This allows us to handle reaching the target exactly like reaching any other station.
+Maintain:
+tank: current amount of fuel available.
+prev: previous station position.
+stops: number of refueling stops.
+heap: max heap containing fuel amounts of stations already passed.
+Iterate through each station:
+
+Calculate the distance from the previous position:
+
+distance = current_position - prev
+If the current fuel is not enough to reach this station:
+Take the maximum fuel available from the heap.
+Increase the stop count.
+If the heap is empty, it means the target cannot be reached, so return -1.
+After reaching the station:
+Subtract the travelled distance from the tank.
+Update the previous position.
+Add the station's fuel to the heap.
+Return the total number of stops.
+
+Why Greedy Works
+
+Whenever we need more fuel, we have a choice of all previously passed stations.
+
+Choosing a station with smaller fuel can never be better than choosing the station with maximum fuel because:
+
+It gives us the greatest increase in travelling range.
+It does not affect the availability of future stations.
+Therefore, every refueling decision is optimal.
+
+Complexity Analysis
+Let n be the number of fuel stations.
+
+Time Complexity:
+O(n log n)
+
+Each station is added to the heap once.
+Each refueling operation removes one station from the heap.
+Heap operations take O(log n) time.
+
+Space Complexity:
+O(n)
+
+The heap can contain fuel from all previously visited stations.
+
+Code
+import heapq
+class Solution:
+    def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]]) -> int:
+        heap = []
+        tank = startFuel
+        prev = 0
+        stops = 0
+        stations.append([target,0])
+        for position , stationfuel in stations:
+            distance = position - prev
+            while distance > tank:
+                if not heap:
+                    return - 1
+                tank += -heapq.heappop(heap)
+                stops += 1
+            tank -= distance
+            prev = position
+            heapq.heappush(heap,-stationfuel)
+        return stops
