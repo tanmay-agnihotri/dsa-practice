@@ -1,0 +1,70 @@
+problem link : https://leetcode.com/problems/n-queens/description/
+Intuition
+We place queens column by column. For each column, we try placing a queen in every row. Before placing a queen, we need to ensure that no previously placed queen attacks the current position.
+
+Instead of scanning the board every time (which takes O(n)), we maintain three arrays:
+
+leftRow[row] → whether a queen already exists in that row.
+lowerDiagonal[row + col] → whether the \ diagonal is occupied.
+upperDiagonal[n - 1 + col - row] → whether the / diagonal is occupied.
+
+This allows us to check whether a position is safe in O(1) time.
+
+Whenever we place a queen, we mark the corresponding row and diagonals as occupied. After exploring that choice, we backtrack by removing the queen and unmarking those entries.
+
+Approach
+Initialize an n × n board filled with '.'.
+Maintain three helper arrays:
+leftRow
+lowerDiagonal
+upperDiagonal
+Start backtracking from column 0.
+For each row in the current column:
+Check whether the row and both diagonals are free.
+If safe:
+Place the queen.
+Mark the row and diagonals.
+Recurse for the next column.
+Backtrack by removing the queen and restoring the helper arrays.
+Once all columns are processed, store the current board configuration.
+
+Complexity
+Time Complexity: O(N!)
+
+In the worst case, we try placing one queen in each column. The branching factor decreases as more queens are placed, resulting in approximately N! possible states. Since safety checking is O(1), each recursive state is processed efficiently.
+
+Space Complexity: O(N²)
+
+Board: O(N²)
+Helper arrays: O(N)
+Recursion stack: O(N)
+
+Excluding the output, the auxiliary space is O(N²) due to the board.
+
+Code
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        result = []
+        board = ["." * n for _ in range(n)]
+        leftrow = [0] * n
+        upperDiogonal = [0] * (2*n - 1)
+        lowerDiogonal = [0] * (2*n - 1)
+
+        def solve(col):
+            if col == n:
+                result.append(board.copy())
+                return 
+            for row in range(n):
+                if leftrow[row] == 0 and lowerDiogonal[row+col] == 0 and upperDiogonal[n-1 + col - row] == 0:
+                    board[row] = board[row][:col] + "Q" + board[row][col+1:]
+                    leftrow[row] = 1
+                    lowerDiogonal[row+col] = 1
+                    upperDiogonal[n-1+col-row] = 1
+                    solve(col+1)
+                    board[row] = board[row][:col] + "." + board[row][col+1:]
+                    leftrow[row] = 0
+                    lowerDiogonal[row+col] = 0
+                    upperDiogonal[n-1+col-row] = 0
+
+        solve(0)
+        return result
