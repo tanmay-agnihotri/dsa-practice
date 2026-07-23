@@ -1,0 +1,59 @@
+problem link  :https://leetcode.com/problems/n-queens-ii/description/
+Intuition
+Since only one queen can be placed in each column, we place queens column by column using backtracking. For every column, we try each row and recursively attempt to place queens in the remaining columns.
+
+To efficiently determine whether a position is safe, we maintain three arrays that track occupied rows and diagonals. This allows us to check the validity of a position in O(1) time instead of scanning the board.
+
+Whenever a valid arrangement is formed (i.e., all n columns have been processed), we increment the answer
+
+Maintain three helper arrays:
+leftRow[row] indicates whether a queen is already placed in that row.
+lowerDiagonal[row + col] indicates whether the \ diagonal is occupied.
+upperDiagonal[n - 1 + col - row] indicates whether the / diagonal is occupied.
+Start backtracking from the first column.
+For every row in the current column:
+Check if the row and both diagonals are free.
+If safe:
+Mark the row and diagonals as occupied.
+Recurse for the next column.
+Backtrack by unmarking the row and diagonals.
+When all columns have been processed, increment the solution count.
+Return the total number of valid configurations.
+
+Complexity
+Time Complexity: O(N!)
+
+In the worst case, we explore all possible queen placements. Since checking whether a position is safe takes O(1) time using the helper arrays, each recursive state is processed efficiently.
+
+Space Complexity: O(N)
+
+leftRow: O(N)
+lowerDiagonal: O(2N − 1)
+upperDiagonal: O(2N − 1)
+Recursion stack: O(N)
+
+Therefore, the auxiliary space complexity is O(N) (excluding the call stack constants and the returned integer).
+
+Code
+class Solution:
+    def totalNQueens(self, n: int) -> int:
+        count = 0
+        leftrow = [0] * n
+        lowerDiogonal = [0] * (2*n - 1)
+        upperDiogonal = [0] * (2*n - 1)
+        def backtrack(col):
+            nonlocal count
+            if col == n:
+                count += 1
+                return
+            for row in range(n):
+                if leftrow[row] == 0 and upperDiogonal[n-1+col-row] == 0 and lowerDiogonal[row+col] == 0:
+                    upperDiogonal[n-1+col-row] = 1
+                    leftrow[row] = 1
+                    lowerDiogonal[row+col] = 1
+                    backtrack(col+1)
+                    leftrow[row] = 0
+                    lowerDiogonal[row+col] = 0
+                    upperDiogonal[n-1+col-row] = 0
+        backtrack(0)
+        return count
