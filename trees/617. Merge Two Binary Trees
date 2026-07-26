@@ -1,0 +1,42 @@
+problem link : https://leetcode.com/problems/merge-two-binary-trees/description/?envType=problem-list-v2&envId=d8mhdjzv
+Intuition
+Imagine physically overlaying one tree on top of the other, like stacking two transparent sheets with tree diagrams drawn on them. Wherever both sheets have a node at the same position, the numbers add together. Wherever only one sheet has a node, that node just shows through as-is. Wherever neither has a node, that spot stays blank.
+
+This "overlay" framing tells you immediately that you're doing a simultaneous traversal of both trees at once, position by position — not two separate traversals. At every position, you only have four possible situations: both nodes present, only one present (two variants), or neither present. Once you frame the problem that way, the recursion almost writes itself.
+
+Approach
+Use recursion (DFS), walking both trees at the same time, node by node:
+
+Base case — both missing: if the current position is None in both trees, there's nothing to merge here — return None.
+Base case — only one tree has a node: if one side is None, there's no merging math to do — just return the other tree's node (and everything below it) unchanged.
+Recursive case — both have a node: create a new node whose value is the sum of both current values. Then recursively merge the left children together, and recursively merge the right children together, attaching the results.
+
+Because recursion naturally stops the instant one side runs out of nodes (step 2), you never have to explicitly check "are we out of bounds" — running out of a tree is the base case.
+
+Complexity
+Time: O(min(n1, n2)) — where n1, n2 are node counts of the two trees. Recursion only continues where both trees still have nodes; the moment one side hits None, that branch terminates immediately (step 2 above), so you never traverse further into the larger tree than the smaller tree allows.
+Space: O(min(h1, h2)) — for the recursion call stack, where h1, h2 are the heights of the two trees. Same reasoning: recursion depth is bounded by whichever tree runs out first.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def mergeTrees(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root1 is None and root2 is None:
+            return None
+        if root1 is None:
+            return root2
+        if root2 is None:
+            return root1
+        mergedNode = TreeNode(root1.val + root2.val)
+        mergedNode.left = self.mergeTrees(root1.left,root2.left)
+        mergedNode.right = self.mergeTrees(root1.right,root2.right)
+        return mergedNode
+Edge cases worth mentioning in an interview
+Both trees completely empty → returns None (empty merged tree).
+One tree completely empty → returns the other tree exactly, node objects reused (not deep-copied — worth flagging if the interviewer cares about mutating input).
+Trees of very different shapes/sizes → handled naturally since each side's None just short-circuits that branch.
