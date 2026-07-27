@@ -1,0 +1,43 @@
+problem link : https://leetcode.com/problems/leaf-similar-trees/description/?envType=problem-list-v2&envId=d8mhdjzv
+ntuition
+The idea is to collect the leaf nodes of both trees in the order they are encountered during a Depth-First Search (DFS). If the two trees are leaf-similar, their leaf sequences must be identical. Therefore, after generating the leaf sequences for both trees, we simply compare the two lists.
+
+Approach
+Create a helper DFS function that traverses the tree.
+If the current node is None, return.
+If the current node is a leaf (both left and right children are None), append its value to the corresponding list.
+Otherwise, recursively traverse the left subtree followed by the right subtree. This naturally records the leaves from left to right.
+Run the DFS on both trees to obtain their leaf sequences.
+Compare the two lists and return the result.
+
+Complexity
+Time Complexity: O(n + m)
+Each node in both trees is visited exactly once.
+Here, n and m are the number of nodes in root1 and root2, respectively.
+Space Complexity: O(L1 + L2 + h1 + h2)
+L1 and L2 are the number of leaf nodes stored in the two lists.
+h1 and h2 are the recursion depths (tree heights).
+In the worst case of a skewed tree, the recursion stack can grow to O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def leafSimilar(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
+        def dfs(root,leaf):
+            if not root:
+                return
+            if not root.left and not root.right:
+                leaf.append(root.val)
+                return
+            dfs(root.left,leaf)
+            dfs(root.right,leaf)
+
+        leaf1 , leaf2 = [] , []
+        dfs(root1,leaf1)
+        dfs(root2,leaf2)
+        return leaf1 == leaf2 
