@@ -1,0 +1,40 @@
+problem link: https://leetcode.com/problems/balanced-binary-tree/description/?envType=problem-list-v2&envId=d3vo6tdv
+Intuition
+A binary tree is balanced if, for every node, the height difference between its left and right subtrees is at most 1.
+
+Instead of calculating the height of each subtree separately (which would lead to repeated work), we perform a postorder DFS. While returning the height of each subtree, we simultaneously check whether the current node satisfies the balance condition.
+
+If we encounter any node whose left and right subtree heights differ by more than 1, we mark the answer as False. Since a tree is balanced only if every node is balanced, once the answer becomes False, it remains False.
+
+Approach
+Create a boolean variable ans initialized to True.
+Define a recursive function fun(node) that returns the height of the subtree rooted at node.
+If the node is None, return 0.
+Recursively compute the heights of the left and right subtrees.
+If the absolute difference between the two heights is greater than 1, set ans = False.
+Return the height of the current subtree as 1 + max(left, right).
+After the DFS completes, return ans.
+Complexity Analysis
+Time Complexity: O(n), where n is the number of nodes. Each node is visited exactly once.
+Space Complexity: O(h), where h is the height of the tree due to the recursion stack. In the worst case (a skewed tree), this is O(n), while for a balanced tree it is O(log n).
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isBalanced(self, root: Optional[TreeNode]) -> bool:
+        ans = True
+        def fun(node):
+            nonlocal ans
+            if not node:
+                return 0
+            left = fun(node.left)
+            right = fun(node.right)
+            if abs(left-right) > 1:
+                ans = False
+            return 1+ max(left,right)
+        fun(root)
+        return ans
