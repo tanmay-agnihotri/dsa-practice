@@ -1,0 +1,90 @@
+problem link: https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/description/?envType=problem-list-v2&envId=d8ksaio6
+Approach: BFS with Parent Pointers
+Intuition
+In a binary tree, every node only stores references to its children. However, for this problem, from the target node we need to move in three possible directions:
+
+Left child
+Right child
+Parent node
+
+Since parent pointers are not directly available, we first create a mapping from each node to its parent. After that, the tree can be treated like an undirected graph.
+
+Once we have this graph representation, we can perform a BFS starting from the target node. BFS explores nodes level by level, so when we reach distance k, the queue will contain exactly all nodes that are k edges away from the target.
+
+Algorithm
+Create a parent map using BFS traversal:
+For every node, store its parent.
+The root has no parent, so it is not stored.
+Perform BFS starting from the target node:
+Initialize the queue with the target node.
+Maintain a visited set to avoid revisiting nodes because adding parent edges creates cycles.
+At each level, explore:
+left child
+right child
+parent node
+Stop BFS when the current distance becomes k.
+The nodes remaining in the queue are the answer. Return their values.
+
+Complexity Analysis
+Let n be the number of nodes.
+
+Time Complexity:
+O(n)
+
+Building the parent map visits every node once.
+BFS visits every node at most once.
+
+Space Complexity:
+O(n)
+
+Parent map stores n-1 relationships.
+Queue and visited set can contain up to n nodes.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+from collections import deque
+class Solution:
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        parent = {}
+        def parents_marked(root,parent):
+            queue = deque([root])
+            while queue:
+                for _ in range(len(queue)):
+                    node = queue.popleft()
+                    if node.left:
+                        parent[node.left] = node
+                        queue.append(node.left)
+                    if node.right:
+                        parent[node.right] = node
+                        queue.append(node.right)
+            return parent
+        parents_marked(root,parent)
+        queue = deque([target])
+        dist = 0
+        visited = set()
+        visited.add(target)
+        while queue:
+            if dist == k:
+                break
+            for _ in range(len(queue)):
+                node = queue.popleft()
+                if node.left and node.left not in visited:
+                    queue.append(node.left)
+                    visited.add(node.left)
+                if node.right and node.right not in visited:
+                    queue.append(node.right)
+                    visited.add(node.right)
+                if node in parent and parent[node] not in visited:
+                    queue.append(parent[node])
+                    visited.add(parent[node])
+            dist += 1
+        result = []
+        while queue:
+            ans = queue.popleft()
+            result.append(ans.val)
+        return result
