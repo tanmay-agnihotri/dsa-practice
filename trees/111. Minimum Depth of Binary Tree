@@ -1,22 +1,37 @@
 problem link : https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
 Intuition
-The minimum depth of a binary tree is the number of nodes along the shortest path from the root to the nearest leaf node.
+The minimum depth of a binary tree is the number of nodes from the root to the nearest leaf node.
 
-We can recursively compute the minimum depth of the left and right subtrees. However, if a node has only one child, we cannot take the minimum of the two depths because the missing child does not represent a valid root-to-leaf path. In such cases, we must continue through the existing child.
+While recursively finding the minimum depth, we need to be careful with nodes that have only one child. A missing child should not be considered as a path of depth 0, because the minimum depth must end at a leaf node.
 
-For each node:
+For example, in a tree like:
 
-If only one child exists, the minimum depth comes from that child.
-If both children exist (or the node is a leaf), the minimum depth is 1 + min(left_depth, right_depth).
+    1
+   /
+  2
+the minimum depth is 2, not 1. Therefore, if one child is missing, we must continue through the existing child.
 
-Complexity
-Time Complexity: O(N)
-Each node is visited exactly once, where N is the number of nodes in the tree.
-Space Complexity: O(H)
-The recursion stack can grow up to the height of the tree H.
-In the worst case (a skewed tree), H = N, so the space complexity becomes O(N).
-For a balanced tree, H = O(log N).
+Approach
+Use recursion to calculate the minimum depth of the left and right subtrees.
 
+For every node:
+
+If the node is None, return 0.
+If the node has only a right child, the depth must come from the right subtree.
+If the node has only a left child, the depth must come from the left subtree.
+If both children exist, return the minimum of the two subtree depths.
+Add 1 for the current node while returning the result.
+
+Complexity Analysis
+Let n be the number of nodes and h be the height of the tree.
+
+Time Complexity: O(n)
+
+Every node is visited once.
+Space Complexity: O(h)
+
+The recursion stack can grow up to the height of the tree.
+In the worst case of a skewed tree, this becomes O(n).
 Code
 # Definition for a binary tree node.
 # class TreeNode:
@@ -27,12 +42,13 @@ Code
 class Solution:
     def minDepth(self, root: Optional[TreeNode]) -> int:
         def solve(node):
-            if node is None: return 0
-            left_height = solve(node.left)
-            right_height = solve(node.right)
-            if node.left is None and node.right is not None:
-                return 1 + right_height
-            elif node.left is not None and node.right is None:
-                return 1 + left_height
-            else : return 1 + min(left_height, right_height)
+            if not node:
+                return 0
+            left = solve(node.left)
+            right = solve(node.right)
+            if not node.left and node.right is not None:
+                return 1 + right
+            elif not node.right and node.left is not None:
+                return 1 + left
+            else: return 1 + min(left,right)
         return solve(root)
