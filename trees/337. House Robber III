@@ -1,0 +1,108 @@
+problem link  :https://leetcode.com/problems/house-robber-iii/description/?envType=problem-list-v2&envId=d3vo6tdv
+Intuition
+For every node, we have two choices:
+
+Rob the current node
+Do not rob the current node
+Since robbing two directly connected houses is not allowed, the decision made at the current node affects the choices available for its children.
+
+Instead of returning a single value from each subtree, we return two values:
+
+withRoot → Maximum money we can rob if the current node is robbed.
+withoutRoot → Maximum money we can rob if the current node is not robbed.
+This information is sufficient for the parent node to make its optimal decision.
+
+Approach
+We perform a postorder DFS, so both children are processed before their parent.
+
+For each node:
+
+Recursively obtain the results from the left and right subtrees.
+If we rob the current node, we cannot rob either child. Therefore:
+withRoot = node.val + left.withoutRoot + right.withoutRoot
+If we do not rob the current node, each child is free to choose whether to rob itself or not. Hence, we take the better of the two states from each child:
+withoutRoot = max(left.withRoot, left.withoutRoot)
+            + max(right.withRoot, right.withoutRoot)
+Finally, return both values to the parent.
+
+At the root, the answer is simply the maximum of the two states.
+
+Algorithm
+Perform a postorder DFS.
+
+For every node, recursively compute the two states for its left and right children.
+
+Compute:
+
+withRoot = node.val + left[1] + right[1]
+withoutRoot = max(left) + max(right)
+Return [withRoot, withoutRoot].
+
+The final answer is max(dfs(root)).
+
+Correctness Proof
+We prove that the algorithm returns the maximum amount of money that can be robbed.
+
+Base Case
+
+For a null node, we return [0, 0], since no money can be robbed whether we choose to rob it or not.
+
+Inductive Hypothesis
+
+Assume that for every subtree rooted at the children of a node, dfs(child) correctly returns:
+
+child[0] = maximum money if the child is robbed.
+child[1] = maximum money if the child is not robbed.
+Inductive Step
+
+Consider a node u.
+
+Case 1: Rob u
+If we rob u, neither child can be robbed.
+
+Therefore, the maximum money is:
+
+u.val + left.withoutRoot + right.withoutRoot
+which is exactly how withRoot is computed.
+
+Case 2: Do not rob u
+If we do not rob u, each child independently chooses the better of its two states.
+
+Thus,
+
+max(left.withRoot, left.withoutRoot)
++
+max(right.withRoot, right.withoutRoot)
+which is exactly how withoutRoot is computed.
+
+Since these are the only two possibilities, the returned pair is optimal for the subtree rooted at u.
+
+By induction, every subtree computes the correct pair of values, including the root.
+
+Finally, the optimal answer is the better of robbing or not robbing the root, so the algorithm returns max(dfs(root)).
+
+Hence, the algorithm is correct.
+
+Complexity Analysis
+Time Complexity: O(n), where n is the number of nodes. Each node is visited exactly once.
+Space Complexity: O(h), where h is the height of the tree due to the recursion stack. In the worst case (skewed tree), this is O(n), while for a balanced tree it is O(log n).
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rob(self, root: Optional[TreeNode]) -> int:
+        # return pair: [withroot,without root]
+        def dfs(node):
+            if node is None:
+                return [0,0]
+            left_pair = dfs(node.left)
+            right_pair = dfs(node.right)
+            withRoot = node.val + left_pair[1] + right_pair[1]
+            withoutRoot = max(left_pair) + max(right_pair)
+            return [withRoot,withoutRoot]
+        ans = dfs(root)
+        return max(ans)
