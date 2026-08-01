@@ -1,0 +1,103 @@
+problem link : https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=d3smsqbv
+Intuition
+Since the input array is sorted in ascending order, any element chosen as the root automatically satisfies the BST property:
+
+All elements to its left are smaller.
+All elements to its right are larger.
+To construct a height-balanced BST, we should choose the middle element as the root. This divides the remaining elements into two nearly equal halves, ensuring that the heights of the left and right subtrees differ by at most one.
+
+The left half of the array recursively forms the left subtree, while the right half recursively forms the right subtree.
+
+Approach
+We solve the problem using divide and conquer.
+
+For a given subarray nums[start...end]:
+
+If start > end, no elements remain, so return None.
+
+Compute the middle index:
+
+mid = (start + end) // 2
+Create a new tree node using nums[mid].
+
+Recursively build the left subtree from nums[start...mid-1].
+
+Recursively build the right subtree from nums[mid+1...end].
+
+Return the current root.
+
+Since each recursive call constructs the BST for a smaller sorted subarray, the entire tree is built recursively.
+
+Algorithm
+Define a recursive function helper(start, end).
+
+If start > end, return None.
+
+Find the middle index of the current subarray.
+
+Create a node with the middle element.
+
+Recursively build:
+
+Left subtree using the left half.
+Right subtree using the right half.
+Return the root of the constructed subtree.
+
+Call helper(0, len(nums) - 1).
+
+Correctness Proof
+We prove that the algorithm constructs a height-balanced BST containing all elements of the input array.
+
+Base Case
+
+If start > end, the subarray is empty. Returning None correctly represents an empty subtree.
+
+Inductive Hypothesis
+
+Assume that for every subarray smaller than the current one, helper(start, end) correctly constructs a height-balanced BST containing exactly the elements of that subarray.
+
+Inductive Step
+
+Consider a subarray nums[start...end].
+
+The middle element is chosen as the root.
+
+Since the array is sorted:
+
+Every element in the left half is smaller than the root.
+Every element in the right half is larger than the root.
+Therefore, the BST property holds.
+
+By the inductive hypothesis:
+
+helper(start, mid - 1) constructs a valid height-balanced BST for the left half.
+helper(mid + 1, end) constructs a valid height-balanced BST for the right half.
+Attaching these subtrees to the root produces a BST containing all elements of the current subarray.
+
+Since the middle element splits the array into two nearly equal halves, the heights of the left and right subtrees differ by at most one, so the resulting tree is height-balanced.
+
+Thus, by induction, the algorithm correctly constructs a height-balanced BST for the entire array.
+
+Complexity Analysis
+Time Complexity: O(n), where n is the number of elements. Each element is used to create exactly one tree node.
+Space Complexity: O(log n) for the recursion stack in a balanced recursion tree. In general, the auxiliary space is O(h), where h is the height of the constructed BST.
+The core idea is recognizing that the problem is a divide-and-conquer problem: choose the middle element as the root, recursively solve the left and right halves, and combine the results.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        def helper(nums,start,end):
+            if start > end:
+                return None
+            mid = (start+end)//2
+            root = TreeNode(nums[mid])
+            root.left = helper(nums,start,mid-1)
+            root.right = helper(nums,mid+1,end)
+            return root
+        return helper(nums,0,len(nums)-1)
