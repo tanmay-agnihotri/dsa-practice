@@ -1,0 +1,65 @@
+problem link: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
+Intuition
+The preorder traversal follows:
+
+Root → Left → Right
+
+Therefore, the first element of preorder is always the root of the current subtree.
+
+The inorder traversal follows:
+
+Left → Root → Right
+
+The position of the root in inorder tells us how the tree is divided:
+
+Elements before the root belong to the left subtree.
+Elements after the root belong to the right subtree.
+
+To avoid repeatedly searching for the root position in inorder, we store the indices of inorder elements in a hashmap.
+
+Approach
+Create a hashmap storing the index of each value in the inorder array.
+Maintain a pointer idx pointing to the current element in preorder.
+Recursively construct the tree:
+Take preorder[idx] as the root.
+Increment idx.
+Find the root's position in inorder using the hashmap.
+Build the left subtree using the left part of inorder.
+Build the right subtree using the right part of inorder.
+Return the root node.
+
+Complexity Analysis
+Time Complexity: O(n)
+
+Each node is created once.
+Hashmap lookup takes O(1).
+
+Space Complexity: O(n)
+
+Hashmap stores n nodes.
+Recursive stack takes O(h) space.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        inorder_map = {}
+        for i in range(len(inorder)):
+            inorder_map[inorder[i]] = i
+        idx = 0
+        def fun(low,high):
+            nonlocal idx
+            if low > high:
+                return None
+            root = TreeNode(preorder[idx])
+            mid = inorder_map[preorder[idx]]
+            idx += 1
+            root.left = fun(low , mid - 1)
+            root.right = fun(mid+1,high)
+            return root
+        return fun(0,len(inorder)-1)
