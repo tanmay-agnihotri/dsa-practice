@@ -1,0 +1,51 @@
+problem link: https://leetcode.com/problems/binary-tree-right-side-view/description/
+Intuition
+Since we only need the node visible from the right side, we do not need to store every value at a level. During a level-order traversal (BFS), the last node processed at each level is the rightmost node because we enqueue the left child before the right child. Therefore, we simply append the value of the last node in every level to the answer.
+
+Approach
+If the tree is empty, return an empty list.
+
+Initialize a queue with the root node.
+
+Perform a level-order traversal using BFS.
+
+For each level:
+
+Store the current queue size (level_size).
+Process exactly level_size nodes.
+Enqueue the left child first, then the right child.
+When processing the last node of the current level (i == level_size - 1), append its value to the result.
+Return the result after all levels have been processed.
+
+Complexity
+Time Complexity: O(n)
+Each node is visited exactly once.
+
+Space Complexity: O(w)
+The queue stores at most the maximum number of nodes at any level (w = maximum width of the tree). In the worst case, this can be O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        result = []
+        queue = deque([root])
+        while queue:
+            level_size = len(queue)
+            for i in range(len(queue)):
+                node = queue.popleft()
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+                if i == level_size - 1:
+                    result.append(node.val)
+        return result
