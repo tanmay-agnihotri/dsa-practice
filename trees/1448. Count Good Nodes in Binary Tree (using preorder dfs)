@@ -1,0 +1,44 @@
+problem link : https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
+Intuition
+A node is considered good if its value is greater than or equal to every value on the path from the root to that node. While traversing the tree, we can keep track of the maximum value seen so far along the current root-to-node path. If the current node's value is greater than or equal to this maximum, it is a good node.
+
+Approach
+Initialize a counter to store the number of good nodes.
+
+Perform a DFS traversal while passing the maximum value seen so far (current_max) along the current path.
+
+For each node:
+
+If node.val >= current_max, increment the counter.
+Update current_max to max(current_max, node.val).
+Recursively traverse the left and right children with the updated current_max.
+After the traversal is complete, return the counter.
+
+Complexity
+Time Complexity: O(n)
+Each node is visited exactly once.
+
+Space Complexity: O(h)
+The recursion stack stores at most one call per level of the tree, where h is the height of the tree. In the worst case, this is O(n), and for a balanced tree, it is O(log n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def goodNodes(self, root: TreeNode) -> int:
+        result = 0
+        def dfs(node,current_max):
+            nonlocal result
+            if not node:
+                return
+            if node.val >= current_max:
+                result += 1
+                current_max = node.val
+            dfs(node.left,current_max)
+            dfs(node.right,current_max)
+        dfs(root,root.val)
+        return result
