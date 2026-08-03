@@ -1,0 +1,47 @@
+problem link: https://leetcode.com/problems/find-bottom-left-tree-value/description/
+Intuition
+The bottom-left value is simply the first node of the last level. During a level-order traversal (BFS), nodes are processed level by level from left to right. Therefore, if we record the value of the first node at every level, the last recorded value will be the bottom-left value of the tree.
+
+Approach
+Initialize a queue with the root node.
+
+Perform a level-order traversal using BFS.
+
+For each level:
+
+Determine the number of nodes in the current level (level_size).
+Process all nodes in that level.
+When processing the first node of the level (i == 0), update the answer.
+Enqueue the left child first, followed by the right child, to preserve left-to-right order.
+After traversing all levels, the answer will contain the value of the first node in the deepest level.
+
+Complexity
+Time Complexity: O(n)
+Each node is visited exactly once.
+
+Space Complexity: O(w)
+The queue stores at most the maximum number of nodes at any level (w = maximum width of the tree). In the worst case, this can be O(n).
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+from collections import deque
+class Solution:
+    def findBottomLeftValue(self, root: Optional[TreeNode]) -> int:
+        result = None
+        queue = deque([root])
+        while queue:
+            level_size = len(queue)
+            for i in range(level_size):
+                node = queue.popleft()
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+                if i == 0:
+                    result = node.val
+        return result            
