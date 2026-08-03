@@ -1,0 +1,55 @@
+problem link : https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
+Intuition
+In a Binary Search Tree (BST), the position of a new value is determined by comparing it with the current node:
+
+If the value is smaller, it belongs in the left subtree.
+If the value is larger, it belongs in the right subtree.
+We can iteratively traverse the tree until we find an empty child position where the new node can be inserted.
+
+Approach
+If the tree is empty, create and return a new node with the given value.
+
+Initialize a pointer curr at the root.
+
+Traverse the BST:
+
+If val is greater than curr.val:
+
+If the right child is empty, insert the new node there and return the root.
+Otherwise, move to the right child.
+Otherwise:
+
+If the left child is empty, insert the new node there and return the root.
+Otherwise, move to the left child.
+Continue until the node is inserted.
+
+Complexity
+Time Complexity: O(h)
+We traverse only the path where the new value should be inserted, where h is the height of the BST.
+
+Space Complexity: O(1)
+We only use a pointer to traverse the tree and do not use recursion or any additional data structures.
+
+Code
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def insertIntoBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        if not root:
+            return TreeNode(val)
+        curr = root
+        while True:
+            if val > curr.val:
+                if not curr.right:
+                    curr.right = TreeNode(val)
+                    return root
+                curr = curr.right
+            else:
+                if not curr.left:
+                    curr.left = TreeNode(val)
+                    return root
+                curr = curr.left
