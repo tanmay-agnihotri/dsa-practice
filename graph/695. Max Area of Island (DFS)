@@ -1,0 +1,57 @@
+problem link  :https://leetcode.com/problems/max-area-of-island/description/
+Approach (DFS)
+We iterate through every cell in the grid. Whenever we encounter an unvisited land cell (1), we start a Depth-First Search (DFS) to explore its entire connected component and calculate its area.
+
+The DFS function recursively visits all four neighboring cells (up, down, left, and right). If a cell is out of bounds, contains water (0), or has already been visited, it contributes 0 to the island's area. Otherwise, we mark the current cell as visited and recursively compute the area of its neighboring land cells.
+
+The area of an island is calculated as:
+
+1 for the current land cell, plus
+the areas returned by the recursive DFS calls in all four directions.
+After computing the area of an island, we update the maximum area found so far. Once every cell has been processed, the maximum recorded area is returned.
+
+Algorithm
+Initialize a visited set and a variable max_area to store the largest island area.
+
+Traverse every cell in the grid.
+
+If the current cell is land (1) and has not been visited:
+
+Start a DFS from that cell.
+Recursively visit all connected land cells.
+Return the total area of the current island.
+Update max_area with the larger of the current maximum and the computed area.
+Return max_area.
+
+Complexity Analysis
+Time Complexity: O(m × n)
+
+Every cell is visited at most once.
+Space Complexity: O(m × n)
+
+The visited set may store all land cells in the worst case, and the recursion stack can also grow to O(m × n) when the island spans the entire grid.
+Code
+class Solution:
+    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        visited = set()
+        max_area = 0
+
+        def dfs(r,c):
+            if (r < 0 or r >= rows or c < 0 or c >= cols or
+                grid[r][c] != 1 or (r,c) in visited):
+                return 0
+            visited.add((r,c))
+            return (1 + dfs(r+1,c) +
+                        dfs(r-1,c) +
+                        dfs(r,c+1) +
+                        dfs(r,c-1))
+
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1 and (r,c) not in visited:
+                    area = dfs(r,c)
+                    max_area = max(max_area,area)
+        return max_area
+                    
