@@ -1,0 +1,49 @@
+problem link : https://leetcode.com/problems/number-of-provinces/description/
+💡 Intuition
+Each city can be viewed as a node in an undirected graph, where isConnected[i][j] == 1 indicates a direct connection between cities i and j.
+
+A province is simply a connected component in this graph. Starting a BFS from any unvisited city will visit every city that belongs to the same province. Therefore, every time we encounter an unvisited city, we perform a BFS to mark all cities in that connected component as visited and increment our province count.
+
+Since the graph is represented as an adjacency matrix, we determine the neighbors of a city by scanning its entire row.
+
+🚀 Approach
+Maintain a visited set to keep track of explored cities.
+Iterate through every city.
+If a city has not been visited:
+Start a BFS from that city.
+During BFS, scan the corresponding row of the adjacency matrix to find all directly connected neighbors.
+Add every unvisited connected city to the queue and mark it as visited.
+Once the BFS completes, all cities in that province have been explored, so increment the province count.
+Return the total number of provinces.
+
+⏱️ Complexity Analysis
+Time Complexity: O(n²)
+For each visited city, we scan all n columns of its row in the adjacency matrix.
+Across all BFS traversals, each city is processed once, resulting in n × n = O(n²).
+Space Complexity: O(n)
+The visited set stores up to n cities.
+The BFS queue can contain up to n cities in the worst case.
+
+Code
+from collections import deque
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+        visited = set()
+        provinces = 0
+        n = len(isConnected)
+
+        def bfs(city):
+            queue = deque([city])
+            visited.add(city)
+            while queue:
+                current = queue.popleft()
+                for neighbor in range(n):
+                    if isConnected[current][neighbor] == 1 and neighbor not in visited:
+                        visited.add(neighbor)
+                        queue.append(neighbor)
+
+        for city in range(n):
+            if city not in visited:
+                bfs(city)
+                provinces += 1
+        return provinces
