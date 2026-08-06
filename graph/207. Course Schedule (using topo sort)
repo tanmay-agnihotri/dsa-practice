@@ -1,0 +1,62 @@
+problem link: https://leetcode.com/problems/course-schedule/description/
+Intuition
+The prerequisite relationships can be modeled as a directed graph, where an edge prerequisite → course indicates that the prerequisite must be completed before taking the course.
+
+A valid course schedule exists only if the graph contains no directed cycle. To determine this, we perform Kahn's Algorithm (Topological Sort using BFS).
+
+Compute the indegree of every course, where indegree represents the number of prerequisites remaining.
+Start with all courses having indegree 0, since they can be taken immediately.
+Process these courses one by one, reducing the indegree of their dependent courses.
+Whenever a course's indegree becomes 0, it is added to the queue.
+If we are able to process all numCourses courses, then every prerequisite constraint can be satisfied. Otherwise, a cycle exists, making it impossible to complete all courses.
+
+Approach
+Build an adjacency list where each prerequisite points to the courses that depend on it.
+
+Compute the indegree of every course.
+
+Push all courses with indegree 0 into a queue.
+
+Perform BFS:
+
+Pop a course from the queue.
+Visit all dependent courses and decrement their indegree.
+If a dependent course's indegree becomes 0, push it into the queue.
+Count the total number of processed courses.
+
+Return True if all courses are processed; otherwise return False.
+
+Complexity Analysis
+Time Complexity: O(V + E)
+
+V = number of courses
+E = number of prerequisite pairs
+Each course is processed once, and each prerequisite edge is visited once.
+Space Complexity: O(V + E)
+
+O(E) for the adjacency list.
+O(V) for the indegree map and BFS queue.
+Code
+from collections import deque
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        graph = [[] for _ in range(numCourses)]
+        indegree = {i:0 for i in range(numCourses)}
+        for course, prereq in prerequisites:
+            graph[prereq].append(course)
+            indegree[course] += 1
+        queue = deque()
+        for course , order in indegree.items():
+            if order == 0:
+                queue.append(course)
+        course_count = len(queue)
+        while queue:
+            course = queue.popleft()
+            for related_course in graph[course]:
+                indegree[related_course] -= 1
+                if indegree[related_course] == 0:
+                    queue.append(related_course)
+                    course_count += 1
+        if course_count == numCourses:
+            return True
+        return False
