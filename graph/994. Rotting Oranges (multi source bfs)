@@ -1,0 +1,78 @@
+problem link: https://leetcode.com/problems/rotting-oranges/description/
+
+Approach: Multi-Source BFS
+Intuition
+A rotten orange spreads to its adjacent fresh oranges every minute. Since all rotten oranges start spreading at the same time, we can treat all initially rotten oranges as starting points of a BFS.
+
+This is called multi-source BFS.
+
+Instead of running BFS separately from each rotten orange, we add all rotten oranges to the queue initially and process them level by level. Each BFS level represents one minute passing.
+
+Algorithm
+Traverse the grid:
+
+Count the number of fresh oranges.
+Add all rotten oranges to the queue as starting points.
+Perform BFS:
+
+Process all oranges currently in the queue (one BFS level).
+
+For each rotten orange, check its four adjacent cells.
+
+If an adjacent cell contains a fresh orange:
+
+Make it rotten.
+Decrease the fresh orange count.
+Add it to the queue for the next level.
+After processing one level, increment the time.
+
+After BFS:
+
+If any fresh oranges remain, they cannot be reached, so return -1.
+Otherwise, return the elapsed time.
+Why BFS?
+BFS naturally explores nodes in increasing distance from the starting points. Since each level corresponds to one minute, BFS gives the minimum time required for all reachable oranges to become rotten.
+
+Complexity Analysis
+Let m be the number of rows and n be the number of columns.
+
+Time Complexity:
+O(m * n)
+
+Each cell is processed at most once when it becomes rotten.
+
+Space Complexity:
+O(m * n)
+
+In the worst case, the queue can contain all cells in the grid.
+
+Code
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        fresh = 0
+        queue = collections.deque()
+        time = 0
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == 1:
+                    fresh += 1
+                if grid[r][c] == 2:
+                    queue.append((r,c))
+        directions = [[1,0],[-1,0],[0,1],[0,-1]]
+        while queue and fresh > 0:
+            for i in range(len(queue)):
+                row , col = queue.popleft()
+                for dr , dc in directions:
+                    nr = dr + row
+                    nc = dc + col
+                    if (0 > nc or nc >= cols or
+                        0 > nr or nr >= rows or
+                        grid[nr][nc] != 1):
+                        continue
+                    grid[nr][nc] = 2
+                    queue.append((nr,nc))
+                    fresh -= 1
+            time += 1
+        return time if fresh == 0 else -1
