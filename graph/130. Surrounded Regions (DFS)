@@ -1,0 +1,76 @@
+problem link : https://leetcode.com/problems/surrounded-regions/description/?envType=problem-list-v2&envId=d89bfyyr
+Intuition
+An O should only be captured if it is completely surrounded by X.
+
+Instead of trying to find surrounded regions directly, I look for the opposite:
+
+Any O connected to the boundary can never be surrounded.
+
+So I first run DFS from every boundary O and temporarily mark all connected Os as T (safe).
+
+After that:
+
+Any remaining O is surrounded → change it to X.
+Any T was connected to the boundary → restore it back to O.
+Approach
+Traverse the entire board and find every O on the boundary.
+
+Run DFS from each boundary O.
+
+During DFS:
+
+Stop if the cell is outside the board or is not O.
+Mark the current O as T.
+Visit its four neighboring cells.
+Traverse the board again:
+
+Convert every remaining O to X.
+Traverse the board one final time:
+
+Convert every T back to O.
+Why does this work?
+A region connected to the boundary has a path to the outside, so it cannot be surrounded by X.
+
+Therefore, after marking all boundary-connected Os as T, every O that remains must belong to a surrounded region and can safely be changed to X.
+
+Finally, the Ts are restored to O.
+
+Complexity
+Let R be the number of rows and C be the number of columns.
+
+Time: O(R × C)
+Space: O(R × C) in the worst case due to the DFS recursion stack.
+Code
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        rows , cols = len(board) , len(board[0])
+        directions = [[1,0],[-1,0],[0,1],[0,-1]]
+
+        def dfs(r,c):
+            if (r < 0 or r >= rows or 
+                c < 0 or c >= cols or
+                board[r][c] != "O"):
+                return
+            board[r][c] = "T"
+            for dr , dc in directions:
+                nr , nc = r + dr , c + dc
+                dfs(nr,nc)
+
+        for r in range(rows):
+            for c in range(cols):
+                if (board[r][c] == "O" and
+                    (r in[0,rows-1] or c in[0,cols-1])):
+                    dfs(r,c)
+        
+        for r in range(rows):
+            for c in range(cols):
+                if board[r][c] == "O":
+                    board[r][c] = "X"
+        
+        for r in range(rows):
+            for c in range(cols):
+                if board[r][c] == "T":
+                    board[r][c] = "O"
