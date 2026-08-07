@@ -1,0 +1,75 @@
+problem link : https://leetcode.com/problems/shortest-path-in-binary-matrix/description/
+Approach
+We can treat every 0 cell as a node in a graph.
+
+From each cell, we can move to any of its 8 neighboring cells (horizontal, vertical, or diagonal), as long as the neighboring cell is also 0.
+
+Since every valid move has the same cost of 1, this is an unweighted shortest path problem, so we can use BFS.
+
+We store (row, col, dist) in the queue, where dist is the number of cells in the path from (0, 0) to the current cell.
+
+We mark a cell as visited when we add it to the queue so that we never process the same cell multiple times.
+
+When BFS reaches the bottom-right cell, its distance is the shortest path length.
+
+Algorithm
+If the starting or destination cell is blocked (1), return -1.
+
+Initialize a queue with (0, 0, 1).
+
+The distance starts at 1 because the starting cell itself counts toward the path length.
+Mark (0, 0) as visited.
+
+While the queue is not empty:
+
+Remove the front cell.
+
+If it is the destination, return its distance.
+
+Try all 8 possible directions.
+
+If the new cell is inside the grid, is open (0), and has not been visited:
+
+Mark it visited.
+Add it to the queue with distance dist + 1.
+If the destination cannot be reached, return -1.
+
+Complexity
+Let R be the number of rows and C be the number of columns.
+
+Time: O(R × C)
+Each cell is visited at most once, and each cell has at most 8 neighbors.
+
+Space: O(R × C)
+For the queue and the visited set.
+
+Code
+from collections import deque
+class Solution:
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        directions = [[-1,0], [0,1] , [0,-1], [1,1], [1,-1] ,[1,0],[-1,-1],[-1,1]]
+        visited = set()
+
+        if grid[0][0] != 0 or grid[rows-1][cols-1] != 0:
+            return - 1
+        
+        queue = deque()
+        queue.append((0,0,1))
+        visited.add((0,0))
+        while queue:
+            row , col , dist  = queue.popleft()
+            if row  == rows -1 and col == cols -1:
+                return dist
+            for dr , dc in directions:
+                nr , nc = row + dr , col + dc
+                if (nr < 0 or nr >= rows or
+                    nc < 0 or nc >= cols or
+                    grid[nr][nc] != 0 or 
+                    (nr,nc) in visited):
+                    continue
+                queue.append((nr,nc,dist + 1))
+                visited.add((nr,nc))
+        return - 1
+
